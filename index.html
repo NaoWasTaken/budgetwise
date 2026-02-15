@@ -251,7 +251,7 @@ select option{background:var(--surface2);}
     </div>
     <div class="balance-sep"></div>
     <div class="balance-meta">
-      <div class="balance-meta-row">Spending left this month: <span id="bal-spending-left" style="color:var(--yellow)">$0.00</span></div>
+      <div class="balance-meta-row">Safe to spend now: <span id="bal-spending-left" style="color:var(--yellow)">$0.00</span></div>
       <div class="balance-meta-row">Income still coming: <span id="bal-inc-left" style="color:var(--green)">$0.00</span></div>
       <div class="balance-meta-row">Expenses still due: <span id="bal-exp-left" style="color:var(--red)">$0.00</span></div>
     </div>
@@ -752,8 +752,83 @@ function renderDashboard() {
 
   // Bank balance
   let bankBal = meta.bankBalance != null ? meta.bankBalance : (totalIncDone - totalExpDone);
+
+  // ── CHRONOLOGICAL CASH-FLOW SIMULATION ──────────────
+  // Build a list of every future cash event (income + expense) between now and end of month
+  // then walk day by day, tracking running balance, to find true spending money
+
+  // Helper: get all future occurrence dates for a recurring entry after today
+  function futureDates(entry) {
+    const dates = [];
+    const freq = entry.freq;
+    const startDate = entry.date ? new Date(entry.date + 'T00:00:00') : start;
+    const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
+
+    if (freq === 'monthly') {
+      const d = new Date(now.getFullYear(), now.getMonth(), startDate.getDate());
+      if (d > now && d <= end) dates.push(d);
+    } else if (freq === 'biweekly') {
+      let cursor = new Date(startDate);
+      while (cursor <= now) cursor.setDate(cursor.getDate() + 14);
+      while (cursor <= end) { if (cursor > now) dates.push(new Date(cursor)); cursor.setDate(cursor.getDate() + 14); }
+    } else if (freq === 'daily') {
+      let cursor = new Date(tomorrow);
+      while (cursor <= end) { dates.push(new Date(cursor)); cursor.setDate(cursor.getDate() + 1); }
+    } else if (freq === 'weekly') {
+      const days = entry.days || [];
+      let cursor = new Date(tomorrow);
+      while (cursor <= end) {
+        if (days.includes(cursor.getDay())) dates.push(new Date(cursor));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    }
+    return dates;
+  }
+
+  // Build future cash events: { date, amount (positive=income, negative=expense) }
+  const cashEvents = [];
+  recInc.forEach(e => {
+    futureDates(e).forEach(d => cashEvents.push({ date: d, amount: e.amount }));
+  });
+  recExp.forEach(e => {
+    futureDates(e).forEach(d => cashEvents.push({ date: d, amount: -e.amount }));
+  });
+  // Future one-time entries
+  thisMonthOtInc.filter(e => new Date(e.date+'T00:00:00') > now)
+    .forEach(e => cashEvents.push({ date: new Date(e.date+'T00:00:00'), amount: e.amount }));
+  thisMonthOtExp.filter(e => new Date(e.date+'T00:00:00') > now)
+    .forEach(e => cashEvents.push({ date: new Date(e.date+'T00:00:00'), amount: -e.amount }));
+
+  // Sort by date ascending
+  cashEvents.sort((a, b) => a.date - b.date);
+
+  // Walk through events chronologically, tracking running balance
+  // spendingLeft = balance at current moment minus all expenses that will hit
+  // before the next income that covers them
+  let runningBal = bankBal;
+  let minSafeBalance = bankBal; // track the tightest point
+
+  // Group events by day to process income before expenses within same day
+  const byDay = {};
+  cashEvents.forEach(ev => {
+    const key = ev.date.toDateString();
+    if (!byDay[key]) byDay[key] = { date: ev.date, income: 0, expense: 0 };
+    if (ev.amount > 0) byDay[key].income += ev.amount;
+    else byDay[key].expense += Math.abs(ev.amount);
+  });
+
+  Object.values(byDay).sort((a,b) => a.date - b.date).forEach(day => {
+    runningBal += day.income;   // income lands first
+    runningBal -= day.expense;  // then expenses hit
+    if (runningBal < minSafeBalance) minSafeBalance = runningBal;
+  });
+
+  // Spending money = current balance minus how much we need to keep to cover
+  // all future expenses even after income comes in.
+  // More intuitively: it's the minimum balance we'll ever reach this month,
+  // which tells us what we can safely spend right now without going negative.
   const projectedBal = bankBal + totalIncLeft - totalExpLeft;
-  const spendingLeft = Math.max(0, bankBal - totalExpLeft);
+  const spendingLeft = Math.max(0, minSafeBalance);
 
   // Update balance bar
   const balEl = document.getElementById('bal-amount');
@@ -775,7 +850,7 @@ function renderDashboard() {
   netEl.className = 'card-value ' + (netMo >= 0 ? 'green' : 'red');
   document.getElementById('s-net-card').className = 'summary-card net ' + (netMo >= 0 ? 'pos' : 'neg');
   document.getElementById('s-spending').textContent = fmt(spendingLeft);
-  document.getElementById('s-spending-sub').textContent = 'bank balance minus expenses still due';
+  document.getElementById('s-spending-sub').textContent = 'lowest your balance will drop this month';
 
   // Income split
   let incRows = '';
