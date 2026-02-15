@@ -184,28 +184,34 @@ select option{background:var(--surface2);}
 .inv-sum-sep{width:1px;height:36px;background:var(--border2);margin:0 4px;}
 .inv-sum-label{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
 .inv-sum-val{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;}
-.inv-cards-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
-.inv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;transition:border-color .2s;}
+/* ONE CARD PER ROW */
+.inv-cards-grid{display:flex;flex-direction:column;gap:14px;margin-bottom:16px;}
+.inv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;position:relative;overflow:hidden;transition:border-color .2s;display:grid;grid-template-columns:220px 1fr 200px;gap:0;align-items:center;}
 .inv-card:hover{border-color:var(--border3);}
 .inv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border2);}
-.inv-card.has-holding::before{background:var(--green);}
-.inv-card-rank{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--text3);margin-bottom:6px;}
-.inv-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
-.inv-card-icon{font-size:1.2rem;}
-.inv-card-name{font-size:.82rem;font-weight:700;letter-spacing:-.01em;margin-bottom:1px;}
-.inv-card-ticker{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:var(--text3);}
-.inv-card-price{font-family:'IBM Plex Mono',monospace;font-size:.88rem;font-weight:500;color:var(--white);margin:10px 0 2px;}
-.inv-card-change{font-family:'IBM Plex Mono',monospace;font-size:.68rem;margin-bottom:8px;}
+.inv-card.has-holding::before{background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.4);}
+/* LEFT COLUMN */
+.inv-card-left{display:flex;flex-direction:column;gap:4px;padding-right:24px;border-right:1px solid var(--border);}
+.inv-card-rank{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:.06em;}
+.inv-card-icon-badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:500;color:var(--text2);background:var(--surface2);border:1px solid var(--border2);padding:3px 8px;border-radius:4px;margin-bottom:8px;letter-spacing:.04em;}
+.inv-card-name{font-size:1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:2px;}
+.inv-card-ticker{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);}
+.inv-card-price{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--white);margin-top:12px;}
+.inv-card-change{font-family:'IBM Plex Mono',monospace;font-size:.72rem;margin-top:3px;}
 .inv-card-change.up{color:var(--green);}
 .inv-card-change.down{color:var(--red);}
-.inv-mini-chart{height:50px;margin:8px 0;}
-.inv-card-divider{height:1px;background:var(--border);margin:10px 0;}
-.inv-holding-block{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text2);line-height:1.9;}
-.inv-holding-val{font-size:.85rem;font-weight:700;font-family:'Syne',sans-serif;color:var(--white);}
+/* MIDDLE CHART */
+.inv-card-chart{padding:0 24px;height:120px;position:relative;}
+.inv-card-chart canvas{width:100%!important;height:120px!important;}
+/* RIGHT COLUMN */
+.inv-card-right{padding-left:24px;border-left:1px solid var(--border);}
+.inv-card-desc{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);line-height:1.7;}
+.inv-holding-block{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--text2);line-height:2;}
+.inv-holding-val{font-size:.95rem;font-weight:800;font-family:'Syne',sans-serif;color:var(--white);}
 .inv-gain-pos{color:var(--green);}
 .inv-gain-neg{color:var(--red);}
-.inv-card-desc{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--text3);line-height:1.6;margin-top:8px;border-top:1px solid var(--border);padding-top:8px;}
-@media(max-width:960px){.inv-cards-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:960px){.inv-card{grid-template-columns:1fr;}.inv-card-left{border-right:none;border-bottom:1px solid var(--border);padding-right:0;padding-bottom:16px;margin-bottom:16px;}.inv-card-right{border-left:none;border-top:1px solid var(--border);padding-left:0;padding-top:16px;margin-top:8px;}.inv-card-chart{padding:0;height:100px;}}
+
 
 /* API KEY BAR */
 .api-key-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
@@ -514,7 +520,7 @@ select option{background:var(--surface2);}
 
     <!-- INVESTMENT CARD — spans full width -->
     <div class="form-card" style="grid-column:1/-1">
-      <div class="form-card-title">💹 Investment</div>
+      <div class="form-card-title">Investment</div>
       <div class="form-card-sub">// track money you've put into BTC, ETFs, or other assets — visible on dashboard</div>
       <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr auto;gap:14px;align-items:flex-end;flex-wrap:wrap;">
         <div class="form-group" style="margin-bottom:0">
@@ -545,10 +551,6 @@ select option{background:var(--surface2);}
         </div>
       </div>
       <div class="success-flash" id="flash-investment">Investment added ✓</div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);line-height:1.7;">
-        <strong style="color:var(--text2)">How it works:</strong> Enter how much you put in, when, and the price per unit at the time. The dashboard will show your current value using live prices fetched from Yahoo Finance.
-        You can find historical BTC prices at coindesk.com, and ETF prices at finance.yahoo.com.
-      </div>
     </div>
   </div>
 </div>
@@ -1464,11 +1466,11 @@ async function runAdvisor(type, btn) {
 // INVESTMENTS
 // ══════════════════════════════════════════════════════
 const ASSETS = {
-  'BTC-USD': { name:'Bitcoin',         ticker:'BTC', icon:'₿',  desc:'High volatility crypto. Highest potential gains, highest risk. Best for money you can afford to lose.', rank:1 },
-  'VOO':     { name:'Vanguard S&P 500', ticker:'VOO', icon:'📈', desc:'Tracks 500 largest US companies. The gold standard — low fees, historically ~10% annual return.', rank:2 },
-  'QQQ':     { name:'Nasdaq 100 ETF',   ticker:'QQQ', icon:'💻', desc:'Top 100 non-financial Nasdaq stocks. Heavy tech (Apple, Nvidia, Microsoft). Higher growth than VOO.', rank:3 },
-  'GLD':     { name:'SPDR Gold ETF',    ticker:'GLD', icon:'🥇', desc:'Tracks physical gold price. Inflation hedge. Strong performer in economic uncertainty.', rank:4 },
-  'VNQ':     { name:'Vanguard Real Estate', ticker:'VNQ', icon:'🏢', desc:'Real estate investment trusts. ~4% dividend yield. Steady income that beats savings accounts.', rank:5 },
+  'BTC-USD': { name:'Bitcoin',             ticker:'BTC', icon:'₿',  desc:'High volatility crypto. Highest potential gains, highest risk. Best for money you can afford to lose.', rank:1 },
+  'VOO':     { name:'Vanguard S&P 500',    ticker:'VOO', icon:'S&P', desc:'Tracks 500 largest US companies. The gold standard — low fees, historically ~10% annual return.', rank:2 },
+  'QQQ':     { name:'Nasdaq 100 ETF',      ticker:'QQQ', icon:'NDX', desc:'Top 100 non-financial Nasdaq stocks. Heavy tech (Apple, Nvidia, Microsoft). Higher growth than VOO.', rank:3 },
+  'GLD':     { name:'SPDR Gold ETF',       ticker:'GLD', icon:'Au',  desc:'Tracks physical gold price. Inflation hedge. Strong performer in economic uncertainty.', rank:4 },
+  'VNQ':     { name:'Vanguard Real Estate',ticker:'VNQ', icon:'RE',  desc:'Real estate investment trusts. ~4% dividend yield. Steady income that beats savings accounts.', rank:5 },
 };
 const ASSET_KEYS = Object.keys(ASSETS);
 const loadInv = () => JSON.parse(localStorage.getItem('bw_investments') || '[]');
@@ -1478,25 +1480,35 @@ let miniCharts = {};
 
 async function loadInvestmentPrices() {
   const label = document.getElementById('inv-last-updated');
-  if (label) label.textContent = '// fetching live prices…';
+  if (label) label.textContent = '// fetching live prices\u2026';
   const symbols = ASSET_KEYS.join(',');
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-  try {
-    const res  = await fetch(proxy);
-    const json = await res.json();
-    const data = JSON.parse(json.contents);
-    (data?.quoteResponse?.result || []).forEach(q => {
-      livePrices[q.symbol] = {
-        price:     q.regularMarketPrice || 0,
-        change:    q.regularMarketChange || 0,
-        changePct: q.regularMarketChangePercent || 0,
-      };
-    });
-    if (label) label.textContent = `// prices updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
-  } catch(e) {
-    if (label) label.textContent = '// could not load live prices — showing estimates';
+  const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+  const sparkUrl = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${symbols}&range=7d&interval=1d`;
+  const proxies = [
+    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  ];
+  let fetched = false;
+  for (const makeProxy of proxies) {
+    try {
+      const [qRes, sRes] = await Promise.all([fetch(makeProxy(quoteUrl)), fetch(makeProxy(sparkUrl))]);
+      const qJson = await qRes.json();
+      const sJson = await sRes.json();
+      const qData = JSON.parse(typeof qJson.contents==='string' ? qJson.contents : JSON.stringify(qJson));
+      const sData = JSON.parse(typeof sJson.contents==='string' ? sJson.contents : JSON.stringify(sJson));
+      (qData?.quoteResponse?.result||[]).forEach(q => {
+        livePrices[q.symbol] = { price: q.regularMarketPrice||0, change: q.regularMarketChange||0, changePct: q.regularMarketChangePercent||0, history:[] };
+      });
+      (sData?.spark?.result||[]).forEach(s => {
+        const pts = s.response?.[0]?.indicators?.quote?.[0]?.close||[];
+        if (livePrices[s.symbol]) livePrices[s.symbol].history = pts.filter(p=>p!=null);
+      });
+      fetched = true;
+      if (label) label.textContent = `// prices updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
+      break;
+    } catch(e) { continue; }
   }
+  if (!fetched && label) label.textContent = '// could not load live prices';
   renderInvestments();
 }
 
@@ -1505,164 +1517,137 @@ function addInvestment() {
   const amount = parseFloat(document.getElementById('inv-amount').value);
   const date   = document.getElementById('inv-date').value || today();
   const price  = parseFloat(document.getElementById('inv-price').value);
-  if (!amount || amount <= 0) { alert('Enter the amount you invested ($).'); return; }
-  if (!price  || price  <= 0) { alert('Enter the price per unit at time of purchase.'); return; }
+  if (!amount||amount<=0){alert('Enter the amount you invested ($).');return;}
+  if (!price||price<=0){alert('Enter the price per unit at time of purchase.');return;}
   const inv = loadInv();
-  inv.push({ id:Date.now(), symbol, amount, date, buyPrice:price, units: amount / price });
+  inv.push({id:Date.now(),symbol,amount,date,buyPrice:price,units:amount/price});
   saveInv(inv);
-  document.getElementById('inv-amount').value = '';
-  document.getElementById('inv-price').value  = '';
+  document.getElementById('inv-amount').value='';
+  document.getElementById('inv-price').value='';
   flash('flash-investment');
   renderInvestments();
 }
 
 function deleteInvestment(id) {
   if (!confirm('Remove this investment?')) return;
-  saveInv(loadInv().filter(i => i.id !== id));
+  saveInv(loadInv().filter(i=>i.id!==id));
   renderInvestments();
 }
 
 function renderInvestments() {
   const investments = loadInv();
   const hasHoldings = investments.length > 0;
-
-  // Per-symbol aggregates
   const holding = {};
-  ASSET_KEYS.forEach(s => { holding[s] = { totalInvested:0, totalUnits:0 }; });
-  investments.forEach(inv => {
-    if (holding[inv.symbol]) {
-      holding[inv.symbol].totalInvested += inv.amount;
-      holding[inv.symbol].totalUnits    += inv.units;
-    }
+  ASSET_KEYS.forEach(s=>{ holding[s]={totalInvested:0,totalUnits:0}; });
+  investments.forEach(inv=>{ if(holding[inv.symbol]){holding[inv.symbol].totalInvested+=inv.amount;holding[inv.symbol].totalUnits+=inv.units;} });
+  ASSET_KEYS.forEach(s=>{
+    const lp=livePrices[s], h=holding[s];
+    h.currentValue=lp?h.totalUnits*lp.price:h.totalInvested;
+    h.gainLoss=h.currentValue-h.totalInvested;
+    h.returnPct=h.totalInvested>0?(h.gainLoss/h.totalInvested)*100:0;
   });
-  ASSET_KEYS.forEach(s => {
-    const lp = livePrices[s];
-    const h  = holding[s];
-    h.currentValue = lp ? h.totalUnits * lp.price : h.totalInvested;
-    h.gainLoss     = h.currentValue - h.totalInvested;
-    h.returnPct    = h.totalInvested > 0 ? (h.gainLoss / h.totalInvested) * 100 : 0;
-  });
-
-  // Portfolio totals
-  const totalInvested = ASSET_KEYS.reduce((a,s)=>a+holding[s].totalInvested,0);
-  const totalCurrent  = ASSET_KEYS.reduce((a,s)=>a+holding[s].currentValue,0);
-  const totalGain     = totalCurrent - totalInvested;
-  const totalReturn   = totalInvested > 0 ? (totalGain/totalInvested)*100 : 0;
-
-  // Summary bar
-  const summBar = document.getElementById('inv-summary-bar');
-  if (summBar) {
-    summBar.style.display = hasHoldings ? 'flex' : 'none';
-    if (hasHoldings) {
-      document.getElementById('inv-total-invested').textContent = fmt(totalInvested);
-      const cvEl = document.getElementById('inv-current-val');
-      cvEl.textContent = fmt(totalCurrent);
-      cvEl.style.color = totalGain >= 0 ? 'var(--green)' : 'var(--red)';
-      const glEl = document.getElementById('inv-gain-loss');
-      glEl.textContent = (totalGain>=0?'+':'-')+fmt(totalGain);
-      glEl.style.color = totalGain >= 0 ? 'var(--green)' : 'var(--red)';
-      const rpEl = document.getElementById('inv-return-pct');
-      rpEl.textContent = (totalReturn>=0?'+':'')+totalReturn.toFixed(2)+'%';
-      rpEl.style.color = totalReturn >= 0 ? 'var(--green)' : 'var(--red)';
+  const totalInvested=ASSET_KEYS.reduce((a,s)=>a+holding[s].totalInvested,0);
+  const totalCurrent=ASSET_KEYS.reduce((a,s)=>a+holding[s].currentValue,0);
+  const totalGain=totalCurrent-totalInvested;
+  const totalReturn=totalInvested>0?(totalGain/totalInvested)*100:0;
+  const summBar=document.getElementById('inv-summary-bar');
+  if(summBar){
+    summBar.style.display=hasHoldings?'flex':'none';
+    if(hasHoldings){
+      document.getElementById('inv-total-invested').textContent=fmt(totalInvested);
+      const cvEl=document.getElementById('inv-current-val'); cvEl.textContent=fmt(totalCurrent); cvEl.style.color=totalGain>=0?'var(--green)':'var(--red)';
+      const glEl=document.getElementById('inv-gain-loss'); glEl.textContent=(totalGain>=0?'+':'-')+fmt(totalGain); glEl.style.color=totalGain>=0?'var(--green)':'var(--red)';
+      const rpEl=document.getElementById('inv-return-pct'); rpEl.textContent=(totalReturn>=0?'+':'')+totalReturn.toFixed(2)+'%'; rpEl.style.color=totalReturn>=0?'var(--green)':'var(--red)';
     }
   }
-
-  // Sort: holdings by current value desc, then unowned by rank
-  const withHoldings    = ASSET_KEYS.filter(s=>holding[s].totalInvested>0).sort((a,b)=>holding[b].currentValue-holding[a].currentValue);
-  const withoutHoldings = ASSET_KEYS.filter(s=>holding[s].totalInvested===0).sort((a,b)=>ASSETS[a].rank-ASSETS[b].rank);
-  const sorted = [...withHoldings, ...withoutHoldings];
-
-  // Render cards
-  const grid = document.getElementById('inv-cards-grid');
-  if (!grid) return;
-  Object.values(miniCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
-  miniCharts = {};
-  grid.innerHTML = '';
-
-  sorted.forEach((symbol) => {
-    const asset = ASSETS[symbol];
-    const h     = holding[symbol];
-    const lp    = livePrices[symbol];
-    const hasThis = h.totalInvested > 0;
-    const rankLabel = !hasThis ? `#${withoutHoldings.indexOf(symbol)+1} recommended` : '';
-    const price = lp?.price ?? null;
-    const changePct = lp?.changePct ?? null;
-    const changeAmt = lp?.change   ?? null;
-
-    const priceStr  = price!=null ? fmt(price) : '—';
-    const changeStr = changePct!=null ? `${changePct>=0?'▲':'▼'} ${Math.abs(changePct).toFixed(2)}% today` : 'loading…';
-    const changeCls = changePct!=null ? (changePct>=0?'up':'down') : '';
-
-    let holdingHTML = '';
-    if (hasThis) {
-      const gainCls = h.gainLoss>=0?'inv-gain-pos':'inv-gain-neg';
-      holdingHTML = `<div class="inv-card-divider"></div>
-        <div class="inv-holding-block">
-          Invested: <span class="inv-holding-val">${fmt(h.totalInvested)}</span><br>
-          Value now: <span class="inv-holding-val ${gainCls}">${fmt(h.currentValue)}</span><br>
-          Gain/Loss: <span class="${gainCls}">${(h.gainLoss>=0?'+':'-')+fmt(h.gainLoss)} (${(h.returnPct>=0?'+':'')+h.returnPct.toFixed(2)}%)</span>
-        </div>`;
+  const withHoldings=ASSET_KEYS.filter(s=>holding[s].totalInvested>0).sort((a,b)=>holding[b].currentValue-holding[a].currentValue);
+  const withoutHoldings=ASSET_KEYS.filter(s=>holding[s].totalInvested===0).sort((a,b)=>ASSETS[a].rank-ASSETS[b].rank);
+  const sorted=[...withHoldings,...withoutHoldings];
+  Object.values(miniCharts).forEach(c=>{try{c.destroy();}catch(e){}});
+  miniCharts={};
+  const grid=document.getElementById('inv-cards-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  sorted.forEach(symbol=>{
+    const asset=ASSETS[symbol], h=holding[symbol], lp=livePrices[symbol];
+    const hasThis=h.totalInvested>0;
+    const rankIdx=withoutHoldings.indexOf(symbol);
+    const rankLabel=(!hasThis&&rankIdx>=0)?`#${rankIdx+1} recommended`:'';
+    const price=lp?.price??null, changePct=lp?.changePct??null, changeAmt=lp?.change??null;
+    const history=lp?.history??[];
+    const priceStr=price!=null?fmt(price):'--';
+    const changeStr=changePct!=null?`${changePct>=0?'\u25b2':'\u25bc'} ${Math.abs(changePct).toFixed(2)}% today`:'--';
+    const changeCls=changePct!=null?(changePct>=0?'up':'down'):'';
+    let rightHTML='';
+    if(hasThis){
+      const gainCls=h.gainLoss>=0?'inv-gain-pos':'inv-gain-neg';
+      rightHTML=`<div class="inv-holding-block">Invested<br><span class="inv-holding-val">${fmt(h.totalInvested)}</span><br>Value now<br><span class="inv-holding-val ${gainCls}">${fmt(h.currentValue)}</span><br>Return<br><span class="${gainCls}">${(h.gainLoss>=0?'+':'-')+fmt(h.gainLoss)} &nbsp;${(h.returnPct>=0?'+':'')+h.returnPct.toFixed(2)}%</span></div>`;
     } else {
-      holdingHTML = `<div class="inv-card-desc">${asset.desc}</div>`;
+      rightHTML=`<div class="inv-card-desc">${asset.desc}</div>`;
     }
-
-    const card = document.createElement('div');
-    card.className = `inv-card ${hasThis?'has-holding':'no-holding'}`;
-    card.innerHTML = `
-      ${rankLabel?`<div class="inv-card-rank">${rankLabel}</div>`:''}
-      <div class="inv-card-header">
-        <div><div class="inv-card-name">${asset.name}</div><div class="inv-card-ticker">${asset.ticker}</div></div>
-        <div class="inv-card-icon">${asset.icon}</div>
+    const card=document.createElement('div');
+    card.className=`inv-card ${hasThis?'has-holding':'no-holding'}`;
+    card.innerHTML=`
+      <div class="inv-card-left">
+        ${rankLabel?`<div class="inv-card-rank">${rankLabel}</div>`:''}
+        <div class="inv-card-icon-badge">${asset.icon}</div>
+        <div class="inv-card-name">${asset.name}</div>
+        <div class="inv-card-ticker">${asset.ticker}</div>
+        <div class="inv-card-price">${priceStr}</div>
+        <div class="inv-card-change ${changeCls}">${changeStr}</div>
       </div>
-      <div class="inv-card-price">${priceStr}</div>
-      <div class="inv-card-change ${changeCls}">${changeStr}</div>
-      <canvas id="mini-${symbol}" style="height:50px;width:100%;display:block"></canvas>
-      ${holdingHTML}`;
+      <div class="inv-card-chart"><canvas id="mini-${symbol}"></canvas></div>
+      <div class="inv-card-right">${rightHTML}</div>`;
     grid.appendChild(card);
-
-    // Sparkline
-    if (price != null) {
-      const base = price - (changeAmt||0)*4;
-      const pts  = Array.from({length:7},(_,i)=>parseFloat((base+(changeAmt||0)*i*(0.5+Math.random()*1)).toFixed(2)));
-      pts[6] = price;
-      const isUp = (changeAmt||0)>=0;
-      const ctx = card.querySelector(`#mini-${symbol}`).getContext('2d');
-      miniCharts[symbol] = new Chart(ctx,{
+    // Build chart points
+    let pts=history.length>=2?history:null;
+    if(!pts){
+      const base=(price??100)-(changeAmt??0)*5;
+      pts=Array.from({length:7},(_,i)=>parseFloat((base+(changeAmt??0)*i*(0.4+Math.random()*0.6)).toFixed(4)));
+      if(price!=null) pts[pts.length-1]=price;
+    }
+    const canvas=document.getElementById(`mini-${symbol}`);
+    if(canvas){
+      const ctx=canvas.getContext('2d');
+      const gradient=ctx.createLinearGradient(0,0,0,120);
+      gradient.addColorStop(0,'rgba(74,222,128,0.28)');
+      gradient.addColorStop(1,'rgba(74,222,128,0.00)');
+      miniCharts[symbol]=new Chart(ctx,{
         type:'line',
-        data:{ labels:pts.map((_,i)=>i), datasets:[{ data:pts, borderColor:isUp?'#4ade80':'#f87171', borderWidth:1.5, pointRadius:0, fill:true, backgroundColor:isUp?'rgba(74,222,128,.08)':'rgba(248,113,113,.08)', tension:0.4 }] },
-        options:{ responsive:false, animation:false, plugins:{legend:{display:false},tooltip:{enabled:false}}, scales:{x:{display:false},y:{display:false}} }
+        data:{labels:pts.map((_,i)=>i),datasets:[{data:pts,borderColor:'#4ade80',borderWidth:2.5,pointRadius:0,fill:true,backgroundColor:gradient,tension:0.45}]},
+        options:{responsive:true,maintainAspectRatio:false,animation:{duration:600},plugins:{legend:{display:false},tooltip:{enabled:true,callbacks:{label:c=>fmt(c.raw)}}},scales:{x:{display:false},y:{display:false}}}
       });
+      canvas.style.filter='drop-shadow(0 0 7px rgba(74,222,128,0.6))';
     }
   });
-
-  // Holdings table
-  const tableSection = document.getElementById('inv-table-section');
-  const tbody = document.getElementById('inv-holdings-tbody');
-  if (tableSection && tbody) {
-    tableSection.style.display = hasHoldings ? 'block' : 'none';
-    tbody.innerHTML = [...investments].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(inv=>{
-      const asset = ASSETS[inv.symbol]||{name:inv.symbol,icon:'📊'};
-      const lp    = livePrices[inv.symbol];
-      const curPrice = lp?.price??null;
-      const curValue = curPrice!=null ? inv.units*curPrice : null;
-      const gl       = curValue!=null ? curValue-inv.amount : null;
-      const ret      = gl!=null ? (gl/inv.amount)*100 : null;
-      const cls      = gl!=null?(gl>=0?'amount-pos':'amount-neg'):'';
+  const tableSection=document.getElementById('inv-table-section');
+  const tbody=document.getElementById('inv-holdings-tbody');
+  if(tableSection&&tbody){
+    tableSection.style.display=hasHoldings?'block':'none';
+    tbody.innerHTML=[...investments].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(inv=>{
+      const asset=ASSETS[inv.symbol]||{name:inv.symbol,icon:'--'};
+      const lp=livePrices[inv.symbol];
+      const curPrice=lp?.price??null;
+      const curValue=curPrice!=null?inv.units*curPrice:null;
+      const gl=curValue!=null?curValue-inv.amount:null;
+      const ret=gl!=null?(gl/inv.amount)*100:null;
+      const cls=gl!=null?(gl>=0?'amount-pos':'amount-neg'):'';
       return `<tr>
-        <td>${asset.icon} ${asset.name}</td>
+        <td><span class="inv-card-icon-badge" style="font-size:.6rem">${asset.icon}</span> ${asset.name}</td>
         <td class="mono" style="font-size:.78rem;color:var(--text2)">${fmtDate(inv.date)}</td>
         <td class="amount-neg">-${fmt(inv.amount)}</td>
         <td class="mono" style="font-size:.78rem">${fmt(inv.buyPrice)}</td>
         <td class="mono" style="font-size:.78rem;color:var(--text2)">${inv.units.toFixed(6)}</td>
-        <td class="mono" style="font-size:.78rem">${curPrice!=null?fmt(curPrice):'—'}</td>
-        <td class="${cls}">${curValue!=null?fmt(curValue):'—'}</td>
-        <td class="${cls}">${gl!=null?(gl>=0?'+':'-')+fmt(gl):'—'}</td>
-        <td class="${cls}">${ret!=null?(ret>=0?'+':'')+ret.toFixed(2)+'%':'—'}</td>
-        <td><button class="delete-btn" onclick="deleteInvestment(${inv.id})">✕</button></td>
+        <td class="mono" style="font-size:.78rem">${curPrice!=null?fmt(curPrice):'--'}</td>
+        <td class="${cls}">${curValue!=null?fmt(curValue):'--'}</td>
+        <td class="${cls}">${gl!=null?(gl>=0?'+':'-')+fmt(gl):'--'}</td>
+        <td class="${cls}">${ret!=null?(ret>=0?'+':'')+ret.toFixed(2)+'%':'--'}</td>
+        <td><button class="delete-btn" onclick="deleteInvestment(${inv.id})">&#x2715;</button></td>
       </tr>`;
     }).join('');
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   ['i-date','e-date','ri-date','re-date','inv-date'].forEach(id=>{
