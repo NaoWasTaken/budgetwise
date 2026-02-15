@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BudgetWise</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;--surface4:#2a2a2a;
+  --border:#2a2a2a;--border2:#333;--border3:#3a3a3a;
+  --text:#f0f0f0;--text2:#999;--text3:#666;
+  --white:#fff;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--yellow:#fbbf24;--purple:#c084fc;
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;}
+body{display:flex;flex-direction:column;min-height:100vh;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,10,0.94);backdrop-filter:blur(20px);z-index:100;}
+.logo{font-size:1.1rem;font-weight:800;letter-spacing:-.02em;color:var(--white);}
+.logo span{color:var(--text3);}
+nav{display:flex;gap:4px;}
+nav button{background:none;border:none;color:var(--text2);font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
+nav button:hover{color:var(--text);background:var(--surface2);}
+nav button.active{color:var(--white);background:var(--surface3);}
+
+/* LAYOUT */
+main{flex:1;padding:28px 32px;max-width:1280px;width:100%;margin:0 auto;}
+.page{display:none;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:5px;}
+.section-sub{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.72rem;margin-bottom:24px;}
+
+/* BANK BALANCE BAR */
+.balance-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;margin-bottom:20px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;}
+.balance-main{display:flex;align-items:baseline;gap:10px;}
+.balance-label{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
+.balance-amount{font-size:2.2rem;font-weight:800;letter-spacing:-.04em;color:var(--white);}
+.balance-amount.green{color:var(--green);}
+.balance-amount.red{color:var(--red);}
+.balance-sep{width:1px;height:40px;background:var(--border2);}
+.balance-meta{display:flex;flex-direction:column;gap:3px;}
+.balance-meta-row{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--text2);}
+.balance-meta-row span{color:var(--text);}
+.balance-input-wrap{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.balance-input{width:160px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px 9px 22px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:.88rem;outline:none;transition:border-color .2s;}
+.balance-input:focus{border-color:var(--text3);}
+.balance-input-pre{position:relative;display:flex;align-items:center;}
+.balance-input-pre::before{content:'$';position:absolute;left:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.82rem;z-index:1;}
+.set-balance-btn{background:var(--white);color:var(--bg);border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+.set-balance-btn:hover{opacity:.85;}
+
+/* MONTH PROGRESS */
+.month-progress-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;margin-bottom:20px;}
+.mp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.mp-title{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
+.mp-pct{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text2);}
+.progress-track{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px;transition:width .6s ease;}
+.mp-dates{display:flex;justify-content:space-between;margin-top:8px;}
+.mp-date{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);}
+
+/* SUMMARY GRID */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;position:relative;overflow:hidden;}
+.summary-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.summary-card.inc::before{background:var(--green);}
+.summary-card.exp::before{background:var(--red);}
+.summary-card.net.pos::before{background:var(--green);}
+.summary-card.net.neg::before{background:var(--red);}
+.summary-card.spend::before{background:var(--yellow);}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.card-value{font-size:1.55rem;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.card-value.green{color:var(--green);}
+.card-value.red{color:var(--red);}
+.card-value.yellow{color:var(--yellow);}
+.card-sub{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);margin-top:6px;line-height:1.5;}
+
+/* MONTH SPLIT ROW */
+.split-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.split-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;}
+.split-title{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+.split-row-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+.split-row-item:last-child{border-bottom:none;padding-bottom:0;}
+.split-row-item.total{font-weight:700;padding-top:10px;margin-top:4px;}
+.sri-label{color:var(--text2);}
+.sri-amt{font-family:'IBM Plex Mono',monospace;font-weight:500;}
+.sri-amt.green{color:var(--green);}
+.sri-amt.red{color:var(--red);}
+.sri-amt.dim{color:var(--text3);}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+.chart-title{font-size:.8rem;font-weight:700;letter-spacing:.02em;margin-bottom:16px;color:var(--text2);text-transform:uppercase;}
+.chart-wrap{position:relative;height:200px;}
+
+/* RECURRING STATUS TABLE */
+.table-section{margin-bottom:20px;}
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.table-title{font-size:.78rem;font-weight:700;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:11px 16px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.85rem;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.05em;}
+.badge.income{background:rgba(74,222,128,.12);color:var(--green);}
+.badge.expense{background:rgba(248,113,113,.12);color:var(--red);}
+.badge.rec-income{background:rgba(96,165,250,.15);color:var(--blue);}
+.badge.rec-expense{background:rgba(251,191,36,.12);color:var(--yellow);}
+.badge.done{background:rgba(74,222,128,.15);color:var(--green);}
+.badge.pending{background:rgba(251,191,36,.12);color:var(--yellow);}
+.badge.partial{background:rgba(96,165,250,.12);color:var(--blue);}
+.amount-pos{color:var(--green);font-family:'IBM Plex Mono',monospace;font-weight:500;}
+.amount-neg{color:var(--red);font-family:'IBM Plex Mono',monospace;font-weight:500;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+.empty-row td{text-align:center;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.75rem;padding:26px;}
+
+/* STATUS TOGGLE */
+.status-toggle{display:flex;align-items:center;gap:6px;}
+.tog-btn{background:none;border:1px solid var(--border2);color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:4px 9px;border-radius:4px;cursor:pointer;transition:all .18s;}
+.tog-btn:hover{border-color:var(--text3);color:var(--text);}
+.tog-btn.paid{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:var(--green);}
+.tog-btn.unpaid{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.3);color:var(--red);}
+.delete-btn{background:none;border:1px solid transparent;color:var(--text3);cursor:pointer;padding:3px 9px;border-radius:4px;font-size:.78rem;transition:all .2s;}
+.delete-btn:hover{color:var(--red);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08);}
+
+/* ADD PAGE */
+.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;}
+.form-card-title{font-size:.95rem;font-weight:700;margin-bottom:3px;}
+.form-card-sub{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--text3);margin-bottom:20px;}
+.form-group{margin-bottom:14px;}
+label{display:block;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+input[type=number],input[type=text],input[type=date],select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text);font-family:'Syne',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s;}
+input:focus,select:focus{border-color:var(--text3);}
+input::placeholder{color:var(--text3);}
+select option{background:var(--surface2);}
+.input-prefix{position:relative;}
+.input-prefix>span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.82rem;}
+.input-prefix input{padding-left:24px;}
+.submit-btn{width:100%;padding:12px;background:var(--white);color:var(--bg);border:none;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:opacity .2s;margin-top:2px;}
+.submit-btn:hover{opacity:.85;}
+.success-flash{display:none;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green);border-radius:var(--radius-sm);padding:9px 13px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;margin-top:10px;text-align:center;}
+.success-flash.show{display:block;animation:fadeIn .3s ease;}
+.day-picker{display:flex;gap:5px;flex-wrap:wrap;}
+.day-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-family:'IBM Plex Mono',monospace;font-size:.7rem;padding:6px 9px;border-radius:5px;cursor:pointer;transition:all .18s;}
+.day-btn:hover{border-color:var(--text3);color:var(--text);}
+.day-btn.selected{background:var(--white);border-color:var(--white);color:var(--bg);font-weight:500;}
+.monthly-preview{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:12px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--blue);line-height:1.6;}
+.monthly-preview .preview-label{color:var(--text3);font-size:.68rem;margin-bottom:2px;}
+
+/* REPORT */
+.report-controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--surface3);border-color:var(--border2);color:var(--white);}
+
+@media(max-width:960px){
+  .summary-grid{grid-template-columns:1fr 1fr;}
+  .charts-grid{grid-template-columns:1fr;}
+  .split-row{grid-template-columns:1fr;}
+  .add-grid{grid-template-columns:1fr;}
+  main{padding:18px 16px;}
+  header{padding:14px 18px;}
+  .balance-bar{gap:16px;}
+  .balance-input-wrap{margin-left:0;width:100%;}
+}
+
+/* API KEY BAR */
+.api-key-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.api-key-status{display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.api-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
+.api-dot.active{background:var(--green);box-shadow:0 0 6px rgba(74,222,128,.5);}
+#api-key-label{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--text2);}
+.api-key-input-wrap{display:flex;gap:8px;align-items:center;flex:1;min-width:260px;}
+.api-key-input-wrap input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:.8rem;outline:none;transition:border-color .2s;}
+.api-key-input-wrap input:focus{border-color:var(--text3);}
+.api-key-input-wrap input::placeholder{color:var(--text3);}
+.api-key-save-btn{background:var(--white);color:var(--bg);border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .2s;}
+.api-key-save-btn:hover{opacity:.85;}
+.api-key-clear-btn{background:none;border:1px solid var(--border2);color:var(--text3);border-radius:var(--radius-sm);padding:9px 12px;font-family:'Syne',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.api-key-clear-btn:hover{border-color:var(--red);color:var(--red);}
+.api-key-note{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--text3);line-height:1.5;}
+
+
+.advisor-controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.advisor-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;padding:9px 18px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.advisor-btn:hover{background:var(--surface3);border-color:var(--border2);color:var(--white);}
+.advisor-btn.active{background:var(--surface3);border-color:var(--border2);color:var(--white);}
+.advisor-btn.running{opacity:.5;cursor:not-allowed;}
+.adv-ask-wrap{display:flex;gap:8px;flex:1;min-width:280px;}
+.adv-ask-wrap input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 13px;color:var(--text);font-family:'Syne',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;}
+.adv-ask-wrap input:focus{border-color:var(--text3);}
+.adv-ask-wrap input::placeholder{color:var(--text3);}
+.advisor-send-btn{background:var(--white);color:var(--bg);border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .2s;}
+.advisor-send-btn:hover{opacity:.85;}
+.advisor-output{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;min-height:320px;position:relative;}
+.adv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 20px;gap:12px;}
+.adv-empty-icon{font-size:2rem;color:var(--text3);}
+.adv-empty-title{font-size:1.1rem;font-weight:700;color:var(--text2);}
+.adv-empty-sub{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--text3);max-width:420px;line-height:1.7;}
+.adv-loading{display:flex;align-items:center;gap:14px;padding:40px 20px;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.82rem;}
+.adv-spinner{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--white);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.adv-response{animation:fadeIn .4s ease;}
+.adv-meta{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.adv-body{font-size:.92rem;line-height:1.8;color:var(--text);}
+.adv-body h3{font-size:1rem;font-weight:700;color:var(--white);margin:22px 0 8px;letter-spacing:-.01em;}
+.adv-body h3:first-child{margin-top:0;}
+.adv-body p{margin-bottom:12px;color:var(--text2);}
+.adv-body ul,.adv-body ol{margin:8px 0 14px 20px;color:var(--text2);}
+.adv-body li{margin-bottom:6px;line-height:1.65;}
+.adv-body strong{color:var(--white);font-weight:600;}
+.adv-body em{color:var(--yellow);}
+.adv-tag-cut{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:.75rem;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);padding:2px 8px;border-radius:4px;margin-right:4px;}
+.adv-tag-keep{color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:.75rem;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:4px;margin-right:4px;}
+.adv-error{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:.8rem;padding:20px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius-sm);}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Budget<span>Wise</span></div>
+  <nav>
+    <button class="active" onclick="showPage('dashboard',this)">Dashboard</button>
+    <button onclick="showPage('add',this)">Add Entry</button>
+    <button onclick="showPage('report',this)">Report</button>
+    <button onclick="showPage('advisor',this)">✦ AI Advisor</button>
+  </nav>
+</header>
+<main>
+
+<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="section-title">Overview</div>
+  <div class="section-sub" id="dash-date"></div>
+
+  <!-- BANK BALANCE BAR -->
+  <div class="balance-bar">
+    <div>
+      <div class="balance-label">Estimated Bank Balance</div>
+      <div class="balance-amount" id="bal-amount">$0.00</div>
+    </div>
+    <div class="balance-sep"></div>
+    <div class="balance-meta">
+      <div class="balance-meta-row">Spending left this month: <span id="bal-spending-left" style="color:var(--yellow)">$0.00</span></div>
+      <div class="balance-meta-row">Income still coming: <span id="bal-inc-left" style="color:var(--green)">$0.00</span></div>
+      <div class="balance-meta-row">Expenses still due: <span id="bal-exp-left" style="color:var(--red)">$0.00</span></div>
+    </div>
+    <div class="balance-sep"></div>
+    <div class="balance-meta">
+      <div class="balance-meta-row">Received so far this month: <span id="bal-inc-done" style="color:var(--green)">$0.00</span></div>
+      <div class="balance-meta-row">Paid so far this month: <span id="bal-exp-done" style="color:var(--red)">$0.00</span></div>
+    </div>
+    <div class="balance-input-wrap">
+      <div class="balance-input-pre">
+        <input class="balance-input" type="number" id="bank-input" placeholder="Actual balance" step="0.01"/>
+      </div>
+      <button class="set-balance-btn" onclick="setBalance()">Set Balance</button>
+    </div>
+  </div>
+
+  <!-- MONTH PROGRESS -->
+  <div class="month-progress-card">
+    <div class="mp-header">
+      <div class="mp-title" id="mp-month-label">Month Progress</div>
+      <div class="mp-pct" id="mp-pct">0% through the month</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="mp-fill" style="width:0%"></div></div>
+    <div class="mp-dates"><span class="mp-date" id="mp-start"></span><span class="mp-date" id="mp-today-label"></span><span class="mp-date" id="mp-end"></span></div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-grid">
+    <div class="summary-card inc">
+      <div class="card-label">Monthly Income</div>
+      <div class="card-value green" id="s-income">$0.00</div>
+      <div class="card-sub" id="s-income-sub">estimated this month</div>
+    </div>
+    <div class="summary-card exp">
+      <div class="card-label">Monthly Expenses</div>
+      <div class="card-value red" id="s-expense">$0.00</div>
+      <div class="card-sub" id="s-expense-sub">estimated this month</div>
+    </div>
+    <div class="summary-card net" id="s-net-card">
+      <div class="card-label">Net This Month</div>
+      <div class="card-value" id="s-net">$0.00</div>
+      <div class="card-sub">income minus expenses</div>
+    </div>
+    <div class="summary-card spend">
+      <div class="card-label">Spending Money Left</div>
+      <div class="card-value yellow" id="s-spending">$0.00</div>
+      <div class="card-sub" id="s-spending-sub">after remaining expenses</div>
+    </div>
+  </div>
+
+  <!-- THIS MONTH SPLIT -->
+  <div class="split-row">
+    <div class="split-card">
+      <div class="split-title">Income This Month</div>
+      <div id="inc-split-rows"></div>
+    </div>
+    <div class="split-card">
+      <div class="split-title">Expenses This Month</div>
+      <div id="exp-split-rows"></div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Income vs Expenses</div>
+      <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Expense Breakdown</div>
+      <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- RECURRING STATUS TABLE -->
+  <div class="table-section">
+    <div class="table-header"><div class="table-title">Recurring This Month — Status</div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Description</th><th>Type</th><th>Schedule</th><th>Est. Monthly</th><th>Occurrences</th><th>Status</th><th></th></tr></thead>
+        <tbody id="recurring-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ONE-TIME THIS MONTH -->
+  <div class="table-section">
+    <div class="table-header"><div class="table-title">One-Time Entries This Month</div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th></th></tr></thead>
+        <tbody id="onetime-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ ADD ENTRY ═══════════════════ -->
+<div class="page" id="page-add">
+  <div class="section-title">Add Entry</div>
+  <div class="section-sub">// record a new income or expense</div>
+  <div class="add-grid">
+    <div class="form-card">
+      <div class="form-card-title">Income</div>
+      <div class="form-card-sub">// one-time income entry</div>
+      <div class="form-group"><label>Amount</label><div class="input-prefix"><span>$</span><input type="number" id="i-amount" placeholder="0.00" min="0" step="0.01"/></div></div>
+      <div class="form-group"><label>Description</label><input type="text" id="i-desc" placeholder="e.g. Freelance payment"/></div>
+      <div class="form-group"><label>Date</label><input type="date" id="i-date"/></div>
+      <button class="submit-btn" onclick="addOneTime('income')">Add Income</button>
+      <div class="success-flash" id="flash-income">Entry added ✓</div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Expense</div>
+      <div class="form-card-sub">// one-time expense entry</div>
+      <div class="form-group"><label>Amount</label><div class="input-prefix"><span>$</span><input type="number" id="e-amount" placeholder="0.00" min="0" step="0.01"/></div></div>
+      <div class="form-group"><label>Description</label><input type="text" id="e-desc" placeholder="e.g. Groceries"/></div>
+      <div class="form-group"><label>Date</label><input type="date" id="e-date"/></div>
+      <button class="submit-btn" onclick="addOneTime('expense')">Add Expense</button>
+      <div class="success-flash" id="flash-expense">Entry added ✓</div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Recurring Income</div>
+      <div class="form-card-sub">// auto-calculates estimated monthly total</div>
+      <div class="form-group"><label>Amount per occurrence</label><div class="input-prefix"><span>$</span><input type="number" id="ri-amount" placeholder="0.00" min="0" step="0.01" oninput="updatePreview('ri')"/></div></div>
+      <div class="form-group"><label>Description</label><input type="text" id="ri-desc" placeholder="e.g. Salary, Tips"/></div>
+      <div class="form-group"><label>Frequency</label>
+        <select id="ri-freq" onchange="updateFreqUI('ri');updatePreview('ri')">
+          <option value="monthly">Monthly</option>
+          <option value="weekly">Weekly (pick days)</option>
+          <option value="biweekly">Bi-weekly</option>
+          <option value="daily">Daily</option>
+        </select>
+      </div>
+      <div class="form-group" id="ri-days-group" style="display:none">
+        <label>Days of the week</label>
+        <div class="day-picker" id="ri-days">
+          <button type="button" class="day-btn" onclick="toggleDay('ri',0)">Sun</button>
+          <button type="button" class="day-btn" onclick="toggleDay('ri',1)">Mon</button>
+          <button type="button" class="day-btn" onclick="toggleDay('ri',2)">Tue</button>
+          <button type="button" class="day-btn" onclick="toggleDay('ri',3)">Wed</button>
+          <button type="button" class="day-btn" onclick="toggleDay('ri',4)">Thu</button>
+          <button type="button" class="day-btn" onclick="toggleDay('ri',5)">Fri</button>
+          <button type="button" class="day-btn" onclick="toggleDay('ri',6)">Sat</button>
+        </div>
+      </div>
+      <div class="form-group"><label>Start Date</label><input type="date" id="ri-date"/></div>
+      <div class="monthly-preview" id="ri-preview" style="display:none"><div class="preview-label">EST. MONTHLY TOTAL</div><span id="ri-preview-val"></span></div>
+      <button class="submit-btn" onclick="addRecurring('income')">Add Recurring Income</button>
+      <div class="success-flash" id="flash-recurring-income">Entry added ✓</div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Recurring Expense</div>
+      <div class="form-card-sub">// auto-calculates estimated monthly total</div>
+      <div class="form-group"><label>Amount per occurrence</label><div class="input-prefix"><span>$</span><input type="number" id="re-amount" placeholder="0.00" min="0" step="0.01" oninput="updatePreview('re')"/></div></div>
+      <div class="form-group"><label>Description</label><input type="text" id="re-desc" placeholder="e.g. Rent, Netflix"/></div>
+      <div class="form-group"><label>Frequency</label>
+        <select id="re-freq" onchange="updateFreqUI('re');updatePreview('re')">
+          <option value="monthly">Monthly</option>
+          <option value="weekly">Weekly (pick days)</option>
+          <option value="biweekly">Bi-weekly</option>
+          <option value="daily">Daily</option>
+        </select>
+      </div>
+      <div class="form-group" id="re-days-group" style="display:none">
+        <label>Days of the week</label>
+        <div class="day-picker" id="re-days">
+          <button type="button" class="day-btn" onclick="toggleDay('re',0)">Sun</button>
+          <button type="button" class="day-btn" onclick="toggleDay('re',1)">Mon</button>
+          <button type="button" class="day-btn" onclick="toggleDay('re',2)">Tue</button>
+          <button type="button" class="day-btn" onclick="toggleDay('re',3)">Wed</button>
+          <button type="button" class="day-btn" onclick="toggleDay('re',4)">Thu</button>
+          <button type="button" class="day-btn" onclick="toggleDay('re',5)">Fri</button>
+          <button type="button" class="day-btn" onclick="toggleDay('re',6)">Sat</button>
+        </div>
+      </div>
+      <div class="form-group"><label>Start Date</label><input type="date" id="re-date"/></div>
+      <div class="monthly-preview" id="re-preview" style="display:none"><div class="preview-label">EST. MONTHLY TOTAL</div><span id="re-preview-val"></span></div>
+      <button class="submit-btn" onclick="addRecurring('expense')">Add Recurring Expense</button>
+      <div class="success-flash" id="flash-recurring-expense">Entry added ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ REPORT ═══════════════════ -->
+<div class="page" id="page-report">
+  <div class="section-title">Full Report</div>
+  <div class="section-sub">// all transactions</div>
+  <div class="report-controls">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('income',this)">Income</button>
+    <button class="filter-btn" onclick="setFilter('expense',this)">Expenses</button>
+    <button class="filter-btn" onclick="setFilter('recurring-income',this)">Recurring Income</button>
+    <button class="filter-btn" onclick="setFilter('recurring-expense',this)">Recurring Expenses</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Schedule</th><th>Amount</th><th>Est. Monthly</th><th></th></tr></thead>
+      <tbody id="report-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════ AI ADVISOR ═══════════════════ -->
+<div class="page" id="page-advisor">
+  <div class="section-title">AI Advisor</div>
+  <div class="section-sub">// powered by Claude — analyzes your real spending data</div>
+
+  <div class="api-key-bar" id="api-key-bar">
+    <div class="api-key-status" id="api-key-status">
+      <span class="api-dot" id="api-dot"></span>
+      <span id="api-key-label">No API key set</span>
+    </div>
+    <div class="api-key-input-wrap">
+      <input type="password" id="api-key-input" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false"/>
+      <button class="api-key-save-btn" onclick="saveApiKey()">Save Key</button>
+      <button class="api-key-clear-btn" id="api-key-clear" onclick="clearApiKey()" style="display:none">Clear</button>
+    </div>
+    <div class="api-key-note">Stored only in your browser's localStorage. Never sent anywhere except directly to api.anthropic.com.</div>
+  </div>
+
+  <div class="advisor-controls">
+    <button class="advisor-btn active" id="adv-btn-full" onclick="runAdvisor('full',this)">Full Analysis</button>
+    <button class="advisor-btn" id="adv-btn-cuts" onclick="runAdvisor('cuts',this)">What to Cut</button>
+    <button class="advisor-btn" id="adv-btn-month" onclick="runAdvisor('month',this)">This Month</button>
+    <button class="advisor-btn" id="adv-btn-savings" onclick="runAdvisor('savings',this)">Savings Plan</button>
+    <div class="adv-ask-wrap">
+      <input type="text" id="adv-custom" placeholder="Ask anything about your finances…" onkeydown="if(event.key==='Enter')runAdvisor('custom',null)"/>
+      <button class="advisor-send-btn" onclick="runAdvisor('custom',null)">Ask →</button>
+    </div>
+  </div>
+
+  <div class="advisor-output" id="advisor-output">
+    <div class="adv-empty">
+      <div class="adv-empty-icon">✦</div>
+      <div class="adv-empty-title">Your AI financial advisor</div>
+      <div class="adv-empty-sub">Click any button above to get personalized insights based on your actual spending data. No guessing — it reads your real entries.</div>
+    </div>
+  </div>
+</div>
+
+</main>
+<script>
+// ══════════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════════
+const load      = () => JSON.parse(localStorage.getItem('bw_entries') || '[]');
+const save      = d  => localStorage.setItem('bw_entries', JSON.stringify(d));
+const loadMeta  = () => JSON.parse(localStorage.getItem('bw_meta') || '{}');
+const saveMeta  = m  => localStorage.setItem('bw_meta', JSON.stringify(m));
+
+// ══════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════
+const fmt      = n => '$' + Math.abs(parseFloat(n)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const fmtSigned= n => (n >= 0 ? '+' : '-') + fmt(n);
+const today    = () => new Date().toISOString().split('T')[0];
+const fmtDate  = d => { if (!d) return ''; const [y,m,day] = d.split('-'); return `${m}/${day}/${y}`; };
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WEEKS_PM  = 365.25 / 12 / 7;
+let currentFilter = 'all';
+let barChart, donutChart;
+
+// ══════════════════════════════════════════════════════
+// MONTHLY CALC
+// ══════════════════════════════════════════════════════
+function calcMonthly(amount, freq, days) {
+  switch (freq) {
+    case 'monthly':  return amount;
+    case 'biweekly': return amount * 2;
+    case 'daily':    return amount * 30.44;
+    case 'weekly':   return amount * (days ? days.length : 1) * WEEKS_PM;
+    default:         return amount;
+  }
+}
+function scheduleLabel(freq, days) {
+  if (freq === 'weekly' && days && days.length)
+    return 'Weekly (' + days.map(d => DAY_NAMES[d]).join(', ') + ')';
+  return { monthly:'Monthly', biweekly:'Bi-weekly', daily:'Daily', weekly:'Weekly' }[freq] || freq;
+}
+
+// ══════════════════════════════════════════════════════
+// MONTH PROGRESS HELPERS
+// ══════════════════════════════════════════════════════
+function getMonthBounds() {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const start = new Date(y, m, 1);
+  const end   = new Date(y, m + 1, 0); // last day
+  return { now, start, end, day: now.getDate(), totalDays: end.getDate() };
+}
+
+// How many times has a recurring entry occurred so far this month?
+function occurrencesSoFar(entry) {
+  const { now, start, day, totalDays } = getMonthBounds();
+  const freq = entry.freq;
+  const startDate = entry.date ? new Date(entry.date + 'T00:00:00') : start;
+
+  if (freq === 'monthly') {
+    // Occurred if start day <= today's day of month
+    const entryDay = startDate.getDate();
+    return entryDay <= day ? 1 : 0;
+  }
+  if (freq === 'biweekly') {
+    // Count bi-weekly hits from start date up to today
+    let count = 0;
+    let cursor = new Date(startDate);
+    // Move cursor to first occurrence in this month or before
+    while (cursor < start) cursor.setDate(cursor.getDate() + 14);
+    while (cursor <= now) { if (cursor >= start) count++; cursor.setDate(cursor.getDate() + 14); }
+    return count;
+  }
+  if (freq === 'daily') {
+    // Days elapsed in this month up to today
+    return day;
+  }
+  if (freq === 'weekly') {
+    // Count selected weekdays that have passed so far this month
+    const days = entry.days || [];
+    let count = 0;
+    let cursor = new Date(start);
+    while (cursor <= now) {
+      if (days.includes(cursor.getDay())) count++;
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return count;
+  }
+  return 0;
+}
+
+// Total occurrences for the full month
+function occurrencesTotal(entry) {
+  const { start, end } = getMonthBounds();
+  const freq = entry.freq;
+  const startDate = entry.date ? new Date(entry.date + 'T00:00:00') : start;
+
+  if (freq === 'monthly') return 1;
+  if (freq === 'biweekly') {
+    let count = 0;
+    let cursor = new Date(startDate);
+    while (cursor < start) cursor.setDate(cursor.getDate() + 14);
+    while (cursor <= end) { count++; cursor.setDate(cursor.getDate() + 14); }
+    return count;
+  }
+  if (freq === 'daily') return end.getDate();
+  if (freq === 'weekly') {
+    const days = entry.days || [];
+    let count = 0;
+    let cursor = new Date(start);
+    while (cursor <= end) {
+      if (days.includes(cursor.getDay())) count++;
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return count;
+  }
+  return 1;
+}
+
+// ══════════════════════════════════════════════════════
+// MANUAL STATUS OVERRIDE (stored in meta)
+// ══════════════════════════════════════════════════════
+function getStatusKey(id) {
+  const now = new Date();
+  return `status_${id}_${now.getFullYear()}_${now.getMonth() + 1}`;
+}
+function getManualStatus(id) {
+  return loadMeta()[getStatusKey(id)]; // 'paid' | 'unpaid' | undefined
+}
+function setManualStatus(id, val) {
+  const meta = loadMeta();
+  meta[getStatusKey(id)] = val;
+  saveMeta(meta);
+  renderDashboard();
+}
+
+// Auto-determine status for a recurring entry
+function autoStatus(entry) {
+  const oSoFar = occurrencesSoFar(entry);
+  const oTotal = occurrencesTotal(entry);
+  if (oSoFar === 0) return 'pending';
+  if (oSoFar >= oTotal) return 'done';
+  return 'partial';
+}
+
+function effectiveStatus(entry) {
+  const manual = getManualStatus(entry.id);
+  if (manual) return manual;
+  return autoStatus(entry);
+}
+
+// ══════════════════════════════════════════════════════
+// BANK BALANCE
+// ══════════════════════════════════════════════════════
+function setBalance() {
+  const val = parseFloat(document.getElementById('bank-input').value);
+  if (isNaN(val)) { alert('Enter a valid number.'); return; }
+  const meta = loadMeta();
+  meta.bankBalance = val;
+  meta.bankSet = new Date().toISOString();
+  saveMeta(meta);
+  document.getElementById('bank-input').value = '';
+  renderDashboard();
+}
+
+// ══════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'report')    renderReport();
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD RENDER
+// ══════════════════════════════════════════════════════
+function renderDashboard() {
+  const entries = load();
+  const meta    = loadMeta();
+  const { now, start, end, day, totalDays } = getMonthBounds();
+  const monthPct = Math.round((day / totalDays) * 100);
+
+  // Date header
+  document.getElementById('dash-date').textContent =
+    '// ' + now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Month progress bar
+  const monthName = now.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+  document.getElementById('mp-month-label').textContent = monthName + ' — Month Progress';
+  document.getElementById('mp-pct').textContent = monthPct + '% through the month';
+  document.getElementById('mp-fill').style.width = monthPct + '%';
+  document.getElementById('mp-start').textContent = '1st';
+  document.getElementById('mp-today-label').textContent = 'Today: ' + day + (day===1?'st':day===2?'nd':day===3?'rd':'th');
+  document.getElementById('mp-end').textContent = totalDays + 'th';
+
+  // Separate entry types
+  const recInc  = entries.filter(e => e.type === 'recurring-income');
+  const recExp  = entries.filter(e => e.type === 'recurring-expense');
+  const otInc   = entries.filter(e => e.type === 'income');
+  const otExp   = entries.filter(e => e.type === 'expense');
+
+  // This month's one-time entries (date within current month)
+  const thisMonthOtInc = otInc.filter(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    return d >= start && d <= end;
+  });
+  const thisMonthOtExp = otExp.filter(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    return d >= start && d <= end;
+  });
+
+  // Monthly estimates
+  const recIncMo  = recInc.reduce((a,e) => a + e.monthlyAmount, 0);
+  const recExpMo  = recExp.reduce((a,e) => a + e.monthlyAmount, 0);
+  const otIncMo   = thisMonthOtInc.reduce((a,e) => a + e.amount, 0);
+  const otExpMo   = thisMonthOtExp.reduce((a,e) => a + e.amount, 0);
+  const totalIncMo  = recIncMo + otIncMo;
+  const totalExpMo  = recExpMo + otExpMo;
+  const netMo = totalIncMo - totalExpMo;
+
+  // What's been received / paid so far (recurring)
+  let recIncDone = 0, recExpDone = 0, recIncLeft = 0, recExpLeft = 0;
+  recInc.forEach(e => {
+    const st = effectiveStatus(e);
+    const oSoFar = occurrencesSoFar(e);
+    const oTotal = occurrencesTotal(e);
+    const oLeft  = Math.max(0, oTotal - oSoFar);
+    const amtDone = oSoFar * e.amount;
+    const amtLeft = oLeft * e.amount;
+    if (st === 'done' || st === 'paid') { recIncDone += e.monthlyAmount; }
+    else if (st === 'partial') { recIncDone += amtDone; recIncLeft += amtLeft; }
+    else { recIncLeft += e.monthlyAmount; }
+  });
+  recExp.forEach(e => {
+    const st = effectiveStatus(e);
+    const oSoFar = occurrencesSoFar(e);
+    const oTotal = occurrencesTotal(e);
+    const oLeft  = Math.max(0, oTotal - oSoFar);
+    const amtDone = oSoFar * e.amount;
+    const amtLeft = oLeft * e.amount;
+    if (st === 'done' || st === 'paid') { recExpDone += e.monthlyAmount; }
+    else if (st === 'partial') { recExpDone += amtDone; recExpLeft += amtLeft; }
+    else { recExpLeft += e.monthlyAmount; }
+  });
+
+  // One-time: already paid = date <= today
+  const otIncDone = thisMonthOtInc.filter(e => new Date(e.date+'T00:00:00') <= now).reduce((a,e)=>a+e.amount,0);
+  const otExpDone = thisMonthOtExp.filter(e => new Date(e.date+'T00:00:00') <= now).reduce((a,e)=>a+e.amount,0);
+  const otIncLeft = thisMonthOtInc.filter(e => new Date(e.date+'T00:00:00') > now).reduce((a,e)=>a+e.amount,0);
+  const otExpLeft = thisMonthOtExp.filter(e => new Date(e.date+'T00:00:00') > now).reduce((a,e)=>a+e.amount,0);
+
+  const totalIncDone = recIncDone + otIncDone;
+  const totalExpDone = recExpDone + otExpDone;
+  const totalIncLeft = recIncLeft + otIncLeft;
+  const totalExpLeft = recExpLeft + otExpLeft;
+
+  // Bank balance
+  let bankBal = meta.bankBalance != null ? meta.bankBalance : (totalIncDone - totalExpDone);
+  const projectedBal = bankBal + totalIncLeft - totalExpLeft;
+  const spendingLeft = Math.max(0, bankBal - totalExpLeft);
+
+  // Update balance bar
+  const balEl = document.getElementById('bal-amount');
+  balEl.textContent = fmt(bankBal);
+  balEl.className = 'balance-amount ' + (bankBal >= 0 ? 'green' : 'red');
+  document.getElementById('bal-spending-left').textContent = fmt(spendingLeft);
+  document.getElementById('bal-inc-left').textContent  = '+' + fmt(totalIncLeft);
+  document.getElementById('bal-exp-left').textContent  = '-' + fmt(totalExpLeft);
+  document.getElementById('bal-inc-done').textContent  = '+' + fmt(totalIncDone);
+  document.getElementById('bal-exp-done').textContent  = '-' + fmt(totalExpDone);
+
+  // Summary cards
+  document.getElementById('s-income').textContent  = fmt(totalIncMo);
+  document.getElementById('s-income-sub').textContent = fmt(totalIncDone) + ' received · ' + fmt(totalIncLeft) + ' coming';
+  document.getElementById('s-expense').textContent = fmt(totalExpMo);
+  document.getElementById('s-expense-sub').textContent = fmt(totalExpDone) + ' paid · ' + fmt(totalExpLeft) + ' due';
+  const netEl = document.getElementById('s-net');
+  netEl.textContent = (netMo >= 0 ? '+' : '-') + fmt(netMo);
+  netEl.className = 'card-value ' + (netMo >= 0 ? 'green' : 'red');
+  document.getElementById('s-net-card').className = 'summary-card net ' + (netMo >= 0 ? 'pos' : 'neg');
+  document.getElementById('s-spending').textContent = fmt(spendingLeft);
+  document.getElementById('s-spending-sub').textContent = 'bank balance minus expenses still due';
+
+  // Income split
+  let incRows = '';
+  recInc.forEach(e => {
+    incRows += splitRow(e.description, e.monthlyAmount, 'green', scheduleLabel(e.freq, e.days));
+  });
+  if (thisMonthOtInc.length) incRows += splitRow('One-time Income', otIncMo, 'green', thisMonthOtInc.length + ' entr' + (thisMonthOtInc.length===1?'y':'ies'));
+  if (!incRows) incRows = '<div style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace;font-size:.75rem;padding:10px 0">No income entries</div>';
+  incRows += splitRow('Total', totalIncMo, 'green', '', true);
+  document.getElementById('inc-split-rows').innerHTML = incRows;
+
+  // Expense split
+  let expRows = '';
+  recExp.forEach(e => {
+    expRows += splitRow(e.description, e.monthlyAmount, 'red', scheduleLabel(e.freq, e.days));
+  });
+  if (thisMonthOtExp.length) expRows += splitRow('One-time Expenses', otExpMo, 'red', thisMonthOtExp.length + ' entr' + (thisMonthOtExp.length===1?'y':'ies'));
+  if (!expRows) expRows = '<div style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace;font-size:.75rem;padding:10px 0">No expense entries</div>';
+  expRows += splitRow('Total', totalExpMo, 'red', '', true);
+  document.getElementById('exp-split-rows').innerHTML = expRows;
+
+  // Charts
+  renderCharts(entries, totalIncMo, totalExpMo, recExpMo, otExpMo, recExp, thisMonthOtExp);
+
+  // Recurring table
+  const recAll = [...recInc, ...recExp];
+  document.getElementById('recurring-tbody').innerHTML = recAll.length
+    ? recAll.map(e => recurringRow(e)).join('')
+    : '<tr class="empty-row"><td colspan="7">No recurring entries yet.</td></tr>';
+
+  // One-time table (this month)
+  const otAll = [...thisMonthOtInc, ...thisMonthOtExp].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('onetime-tbody').innerHTML = otAll.length
+    ? otAll.map(e => oneTimeRow(e)).join('')
+    : '<tr class="empty-row"><td colspan="5">No one-time entries this month.</td></tr>';
+}
+
+function splitRow(label, amt, color, sub, isTotal=false) {
+  return `<div class="split-row-item${isTotal?' total':''}">
+    <div>
+      <div class="sri-label" style="${isTotal?'color:var(--text)':''}">${label}</div>
+      ${sub?`<div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--text3)">${sub}</div>`:''}
+    </div>
+    <div class="sri-amt ${color}">${isTotal?(amt>=0?'+':'-'):''}${fmt(amt)}</div>
+  </div>`;
+}
+
+function recurringRow(e) {
+  const isInc = e.type === 'recurring-income';
+  const st = effectiveStatus(e);
+  const oSoFar = occurrencesSoFar(e);
+  const oTotal = occurrencesTotal(e);
+  const badgeType = isInc ? 'rec-income' : 'rec-expense';
+  const typeLabel = isInc ? 'Rec. Income' : 'Rec. Expense';
+  const amtClass  = isInc ? 'amount-pos' : 'amount-neg';
+  const sign      = isInc ? '+' : '-';
+  const stBadge   = st === 'done' || st === 'paid' ? 'done' : st === 'partial' ? 'partial' : 'pending';
+  const stLabel   = st === 'done' || st === 'paid' ? '✓ Done' : st === 'partial' ? `${oSoFar}/${oTotal} done` : 'Pending';
+  const isPaid    = st === 'done' || st === 'paid';
+  return `<tr>
+    <td>${e.description}</td>
+    <td><span class="badge ${badgeType}">${typeLabel}</span></td>
+    <td class="mono" style="font-size:.75rem;color:var(--text2)">${scheduleLabel(e.freq, e.days)}</td>
+    <td class="${amtClass}">${sign}${fmt(e.monthlyAmount)}</td>
+    <td class="mono" style="font-size:.75rem;color:var(--text3)">${oSoFar} of ${oTotal}</td>
+    <td>
+      <div class="status-toggle">
+        <span class="badge ${stBadge}">${stLabel}</span>
+        <button class="tog-btn ${isPaid?'paid':'unpaid'}" onclick="setManualStatus(${e.id},'${isPaid?'unpaid':'paid'}')">${isPaid?'Mark Unpaid':'Mark Paid'}</button>
+      </div>
+    </td>
+    <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
+  </tr>`;
+}
+
+function oneTimeRow(e) {
+  const isInc = e.type === 'income';
+  return `<tr>
+    <td class="mono" style="color:var(--text2);font-size:.78rem">${fmtDate(e.date)}</td>
+    <td>${e.description}</td>
+    <td><span class="badge ${isInc?'income':'expense'}">${isInc?'Income':'Expense'}</span></td>
+    <td class="${isInc?'amount-pos':'amount-neg'}">${isInc?'+':'-'}${fmt(e.amount)}</td>
+    <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
+  </tr>`;
+}
+
+// ══════════════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════════════
+function renderCharts(entries, totalIncMo, totalExpMo, recExpMo, otExpMo, recExp, otExp) {
+  if (barChart)  barChart.destroy();
+  if (donutChart) donutChart.destroy();
+
+  // BAR
+  const bCtx = document.getElementById('barChart').getContext('2d');
+  barChart = new Chart(bCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Total Income', 'Total Expenses'],
+      datasets: [
+        { label:'Recurring', data:[
+            entries.filter(e=>e.type==='recurring-income').reduce((a,e)=>a+e.monthlyAmount,0),
+            recExpMo
+          ], backgroundColor:['rgba(74,222,128,.45)','rgba(248,113,113,.45)'], borderColor:['#4ade80','#f87171'], borderWidth:1, borderRadius:4 },
+        { label:'One-time', data:[
+            entries.filter(e=>e.type==='income').reduce((a,e)=>a+e.amount,0),
+            otExpMo
+          ], backgroundColor:['rgba(74,222,128,.2)','rgba(248,113,113,.2)'], borderColor:['#4ade80','#f87171'], borderWidth:1, borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#666', font:{ family:'IBM Plex Mono', size:10 }, boxWidth:10 } }, tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+fmt(ctx.raw) } } },
+      scales: {
+        x:{ stacked:true, ticks:{ color:'#555', font:{ family:'IBM Plex Mono', size:10 } }, grid:{ color:'#1a1a1a' } },
+        y:{ stacked:true, ticks:{ color:'#555', font:{ family:'IBM Plex Mono', size:10 }, callback:v=>fmt(v) }, grid:{ color:'#1a1a1a' } }
+      }
+    }
+  });
+
+  // DONUT — expenses: lump all one-time together, recurring individually
+  const donutLabels = [];
+  const donutVals   = [];
+  recExp.forEach(e => { donutLabels.push(e.description); donutVals.push(e.monthlyAmount); });
+  if (otExpMo > 0) { donutLabels.push('One-time Expenses'); donutVals.push(otExpMo); }
+  const palette = ['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#60a5fa','#a78bfa','#f472b6','#94a3b8','#e2e8f0'];
+  const dCtx = document.getElementById('donutChart').getContext('2d');
+  donutChart = new Chart(dCtx, {
+    type:'doughnut',
+    data:{
+      labels: donutLabels.length ? donutLabels : ['No expenses'],
+      datasets:[{ data: donutVals.length ? donutVals : [1], backgroundColor: donutLabels.length ? palette.slice(0,donutLabels.length) : ['#222'], borderColor:'#111', borderWidth:2 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{
+        legend:{ position:'right', labels:{ color:'#777', font:{ family:'IBM Plex Mono', size:10 }, boxWidth:10, padding:10 } },
+        tooltip:{ callbacks:{ label: ctx => {
+          const total = ctx.dataset.data.reduce((a,v)=>a+v,0);
+          const pct   = total > 0 ? ((ctx.raw / total) * 100).toFixed(1) : 0;
+          return ctx.label + ': ' + fmt(ctx.raw) + ' (' + pct + '%)';
+        }}}
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// DELETE
+// ══════════════════════════════════════════════════════
+function deleteEntry(id) {
+  if (!confirm('Delete this entry?')) return;
+  save(load().filter(e => e.id !== id));
+  renderDashboard();
+  renderReport();
+}
+
+// ══════════════════════════════════════════════════════
+// REPORT
+// ══════════════════════════════════════════════════════
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReport();
+}
+function renderReport() {
+  let entries = load();
+  if (currentFilter !== 'all') entries = entries.filter(e => e.type === currentFilter);
+  entries.sort((a,b) => new Date(b.date) - new Date(a.date));
+  const isInc = e => e.type === 'income' || e.type === 'recurring-income';
+  const badgeMap = { income:'income', expense:'expense', 'recurring-income':'rec-income', 'recurring-expense':'rec-expense' };
+  const labelMap = { income:'Income', expense:'Expense', 'recurring-income':'Rec. Income', 'recurring-expense':'Rec. Expense' };
+  document.getElementById('report-tbody').innerHTML = entries.length
+    ? entries.map(e => `<tr>
+        <td class="mono" style="color:var(--text2);font-size:.78rem">${fmtDate(e.date)}</td>
+        <td>${e.description}</td>
+        <td><span class="badge ${badgeMap[e.type]}">${labelMap[e.type]}</span></td>
+        <td class="mono" style="font-size:.75rem;color:var(--text2)">${e.freq ? scheduleLabel(e.freq,e.days) : '-'}</td>
+        <td class="${isInc(e)?'amount-pos':'amount-neg'}">${isInc(e)?'+':'-'}${fmt(e.amount)}</td>
+        <td class="${isInc(e)?'amount-pos':'amount-neg'}">${e.monthlyAmount!=null?(isInc(e)?'+':'-')+fmt(e.monthlyAmount):'-'}</td>
+        <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="7">No entries found.</td></tr>';
+}
+
+// ══════════════════════════════════════════════════════
+// ADD FORMS
+// ══════════════════════════════════════════════════════
+const selectedDays = { ri:[], re:[] };
+function toggleDay(prefix, day) {
+  const arr = selectedDays[prefix];
+  const idx = arr.indexOf(day);
+  idx === -1 ? arr.push(day) : arr.splice(idx, 1);
+  arr.sort((a,b)=>a-b);
+  document.querySelectorAll(`#${prefix}-days .day-btn`).forEach((b,i)=>b.classList.toggle('selected',arr.includes(i)));
+  updatePreview(prefix);
+}
+function updateFreqUI(prefix) {
+  const freq = document.getElementById(`${prefix}-freq`).value;
+  document.getElementById(`${prefix}-days-group`).style.display = freq==='weekly'?'block':'none';
+  if (freq!=='weekly') { selectedDays[prefix]=[]; document.querySelectorAll(`#${prefix}-days .day-btn`).forEach(b=>b.classList.remove('selected')); }
+}
+function updatePreview(prefix) {
+  const amt = parseFloat(document.getElementById(`${prefix}-amount`).value);
+  const freq = document.getElementById(`${prefix}-freq`).value;
+  const preview = document.getElementById(`${prefix}-preview`);
+  const previewVal = document.getElementById(`${prefix}-preview-val`);
+  if (!amt||amt<=0){preview.style.display='none';return;}
+  const monthly = calcMonthly(amt, freq, selectedDays[prefix]);
+  const days = selectedDays[prefix];
+  let breakdown = '';
+  if (freq==='weekly'&&days.length) breakdown=` (${fmt(amt)} × ${days.length} day${days.length>1?'s':''} × ${WEEKS_PM.toFixed(2)} wks/mo)`;
+  else if (freq==='daily') breakdown=` (${fmt(amt)} × 30.44 days/mo)`;
+  else if (freq==='biweekly') breakdown=` (${fmt(amt)} × 2/mo)`;
+  previewVal.textContent = fmt(monthly) + breakdown;
+  preview.style.display = 'block';
+}
+function addOneTime(type) {
+  const pre = type==='income'?'i':'e';
+  const amt  = parseFloat(document.getElementById(`${pre}-amount`).value);
+  const desc = document.getElementById(`${pre}-desc`).value.trim();
+  const date = document.getElementById(`${pre}-date`).value || today();
+  if (!amt||amt<=0){alert('Please enter a valid amount.');return;}
+  if (!desc){alert('Please enter a description.');return;}
+  const entries = load();
+  entries.push({ id:Date.now(), type, amount:amt, description:desc, date, freq:null, days:null, monthlyAmount:amt });
+  save(entries);
+  document.getElementById(`${pre}-amount`).value='';
+  document.getElementById(`${pre}-desc`).value='';
+  document.getElementById(`${pre}-date`).value='';
+  flash(`flash-${type}`);
+  renderDashboard();
+}
+function addRecurring(type) {
+  const pre = type==='income'?'ri':'re';
+  const amt  = parseFloat(document.getElementById(`${pre}-amount`).value);
+  const desc = document.getElementById(`${pre}-desc`).value.trim();
+  const date = document.getElementById(`${pre}-date`).value || today();
+  const freq = document.getElementById(`${pre}-freq`).value;
+  const days = freq==='weekly'?[...selectedDays[pre]]:null;
+  if (!amt||amt<=0){alert('Please enter a valid amount.');return;}
+  if (!desc){alert('Please enter a description.');return;}
+  if (freq==='weekly'&&(!days||days.length===0)){alert('Please select at least one day.');return;}
+  const monthlyAmount = calcMonthly(amt, freq, days);
+  const entries = load();
+  entries.push({ id:Date.now(), type:`recurring-${type}`, amount:amt, description:desc, date, freq, days, monthlyAmount });
+  save(entries);
+  document.getElementById(`${pre}-amount`).value='';
+  document.getElementById(`${pre}-desc`).value='';
+  document.getElementById(`${pre}-date`).value='';
+  document.getElementById(`${pre}-freq`).value='monthly';
+  document.getElementById(`${pre}-preview`).style.display='none';
+  updateFreqUI(pre);
+  selectedDays[pre]=[];
+  flash(`flash-recurring-${type}`);
+  renderDashboard();
+}
+function flash(id) {
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════════════════════
+// API KEY MANAGEMENT
+// ══════════════════════════════════════════════════════
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val) { alert('Please paste your API key first.'); return; }
+  if (!val.startsWith('sk-ant-')) { alert('That doesn\'t look like an Anthropic API key. It should start with sk-ant-'); return; }
+  const meta = loadMeta();
+  meta.anthropicKey = val;
+  saveMeta(meta);
+  document.getElementById('api-key-input').value = '';
+  updateApiKeyUI();
+}
+
+function clearApiKey() {
+  if (!confirm('Remove saved API key?')) return;
+  const meta = loadMeta();
+  delete meta.anthropicKey;
+  saveMeta(meta);
+  updateApiKeyUI();
+}
+
+function getApiKey() {
+  return loadMeta().anthropicKey || null;
+}
+
+function updateApiKeyUI() {
+  const key = getApiKey();
+  const dot   = document.getElementById('api-dot');
+  const label = document.getElementById('api-key-label');
+  const clear = document.getElementById('api-key-clear');
+  if (key) {
+    dot.classList.add('active');
+    label.textContent = 'API key saved (' + key.slice(0,12) + '…)';
+    label.style.color = 'var(--green)';
+    clear.style.display = 'inline-block';
+  } else {
+    dot.classList.remove('active');
+    label.textContent = 'No API key set';
+    label.style.color = '';
+    clear.style.display = 'none';
+  }
+}
+
+
+function buildSpendingContext() {
+  const entries = load();
+  const meta    = loadMeta();
+  const { day, totalDays } = getMonthBounds();
+  const now = new Date();
+  const monthName = now.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+
+  const recInc = entries.filter(e => e.type === 'recurring-income');
+  const recExp = entries.filter(e => e.type === 'recurring-expense');
+  const otInc  = entries.filter(e => e.type === 'income');
+  const otExp  = entries.filter(e => e.type === 'expense');
+
+  const recIncMo = recInc.reduce((a,e)=>a+e.monthlyAmount,0);
+  const recExpMo = recExp.reduce((a,e)=>a+e.monthlyAmount,0);
+  const otIncMo  = otInc.reduce((a,e)=>a+e.amount,0);
+  const otExpMo  = otExp.reduce((a,e)=>a+e.amount,0);
+  const totalInc = recIncMo + otIncMo;
+  const totalExp = recExpMo + otExpMo;
+  const net = totalInc - totalExp;
+  const bankBal = meta.bankBalance != null ? meta.bankBalance : null;
+
+  let ctx = `BUDGETWISE FINANCIAL DATA — ${monthName}\n`;
+  ctx += `Today: Day ${day} of ${totalDays} (${Math.round(day/totalDays*100)}% through the month)\n`;
+  if (bankBal != null) ctx += `Current bank balance: $${bankBal.toFixed(2)}\n`;
+  ctx += `\nMONTHLY INCOME ESTIMATE: $${totalInc.toFixed(2)}\n`;
+  ctx += `MONTHLY EXPENSE ESTIMATE: $${totalExp.toFixed(2)}\n`;
+  ctx += `NET: $${net.toFixed(2)}\n`;
+
+  if (recInc.length) {
+    ctx += `\nRECURRING INCOME:\n`;
+    recInc.forEach(e => {
+      ctx += `  - ${e.description}: $${e.amount.toFixed(2)} per occurrence (${scheduleLabel(e.freq,e.days)}) = ~$${e.monthlyAmount.toFixed(2)}/mo\n`;
+    });
+  }
+  if (recExp.length) {
+    ctx += `\nRECURRING EXPENSES:\n`;
+    recExp.forEach(e => {
+      ctx += `  - ${e.description}: $${e.amount.toFixed(2)} per occurrence (${scheduleLabel(e.freq,e.days)}) = ~$${e.monthlyAmount.toFixed(2)}/mo\n`;
+    });
+  }
+  if (otInc.length) {
+    ctx += `\nONE-TIME INCOME ENTRIES:\n`;
+    otInc.forEach(e => { ctx += `  - ${e.date}: ${e.description} $${e.amount.toFixed(2)}\n`; });
+  }
+  if (otExp.length) {
+    ctx += `\nONE-TIME EXPENSE ENTRIES:\n`;
+    otExp.forEach(e => { ctx += `  - ${e.date}: ${e.description} $${e.amount.toFixed(2)}\n`; });
+  }
+  return ctx;
+}
+
+const ADVISOR_PROMPTS = {
+  full: `You are a sharp, honest personal finance advisor. Analyze this person's real spending data and give them a full financial picture. Cover:
+1. Overall health of their finances (income vs expenses, net position)
+2. Biggest expense categories and whether they look reasonable
+3. Specific items that look like they could be reduced or eliminated (be direct — name the actual entries)
+4. What they're doing well
+5. One or two concrete action items for this month
+Be conversational, not clinical. Use plain English. Don't be preachy. Format with clear headers using ###.`,
+
+  cuts: `You are a no-nonsense budget advisor. Look at this person's spending data and tell them exactly what to cut or reduce. 
+For each item you flag:
+- Name it specifically (use the exact description from the data)
+- Say how much it costs per month
+- Explain in one sentence WHY it's worth cutting (impulse, duplicate, overpriced, etc.)
+- Suggest a specific alternative or reduction amount if relevant
+Also briefly mention what's clearly a necessity and should stay. Be direct and honest — don't soften it. Use ### headers to separate "Consider Cutting", "Could Reduce", and "Keep These".`,
+
+  month: `You are a personal finance advisor. Based on this person's data, give them a clear picture of where they stand RIGHT NOW this month:
+- What income has likely come in so far vs what's still expected
+- What expenses have likely hit vs what's still due
+- Whether they're on track or behind
+- What they should watch out for for the rest of this month
+Be specific with numbers from their data. Use ### headers. Keep it practical and actionable.`,
+
+  savings: `You are a savings-focused financial advisor. Look at this person's data and build them a realistic savings plan:
+- Identify how much they realistically could save per month right now
+- Point out the 2-3 changes that would have the biggest impact on savings
+- Suggest a simple savings target based on their income
+- Give one "quick win" they could implement immediately
+Be honest about what's realistic given their actual numbers. Use ### headers. Don't be generic — reference their actual entries.`,
+};
+
+let advisorRunning = false;
+
+async function runAdvisor(type, btn) {
+  if (advisorRunning) return;
+
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    document.getElementById('advisor-output').innerHTML =
+      '<div class="adv-error">No API key found. Paste your Anthropic API key in the field above and click Save Key, then try again.<br><br>Get one at: <strong>console.anthropic.com</strong></div>';
+    return;
+  }
+
+  // Update active button state
+  document.querySelectorAll('.advisor-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const entries = load();
+  if (!entries.length) {
+    document.getElementById('advisor-output').innerHTML =
+      '<div class="adv-error">No data found. Add some income and expense entries first, then come back.</div>';
+    return;
+  }
+
+  const customQ = type === 'custom' ? document.getElementById('adv-custom').value.trim() : null;
+  if (type === 'custom' && !customQ) {
+    document.getElementById('adv-custom').focus();
+    return;
+  }
+
+  advisorRunning = true;
+  document.querySelectorAll('.advisor-btn').forEach(b => b.classList.add('running'));
+
+  const output = document.getElementById('advisor-output');
+  output.innerHTML = `<div class="adv-loading"><div class="adv-spinner"></div>Analyzing your spending data…</div>`;
+
+  const spendingCtx = buildSpendingContext();
+  const systemPrompt = type === 'custom'
+    ? `You are a knowledgeable personal finance advisor. The user will ask you a question about their finances. Answer using ONLY their actual data provided. Be specific, reference real numbers. Use ### for headers if helpful. Be conversational and direct.`
+    : ADVISOR_PROMPTS[type];
+
+  const userMsg = type === 'custom'
+    ? `Here is my financial data:\n\n${spendingCtx}\n\nMy question: ${customQ}`
+    : `Here is my financial data — please analyze it:\n\n${spendingCtx}`;
+
+  const labelMap = { full:'Full Analysis', cuts:'What to Cut', month:'This Month', savings:'Savings Plan', custom: customQ };
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5-20250929',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.content) throw new Error(data.error?.message || 'API error');
+
+    const raw = data.content.map(c => c.text || '').join('');
+
+    // Convert markdown-ish to styled HTML
+    const html = raw
+      .replace(/### (.+)/g, '<h3>$1</h3>')
+      .replace(/## (.+)/g, '<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[hul])/gm, '')
+      .trim();
+
+    const timestamp = new Date().toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+    output.innerHTML = `
+      <div class="adv-response">
+        <div class="adv-meta">✦ ${labelMap[type] || 'Analysis'} · Generated ${timestamp} · Based on ${entries.length} entr${entries.length===1?'y':'ies'}</div>
+        <div class="adv-body"><p>${html}</p></div>
+      </div>`;
+
+    if (type === 'custom') document.getElementById('adv-custom').value = '';
+
+  } catch (err) {
+    output.innerHTML = `<div class="adv-error">Something went wrong: ${err.message}<br><br>Make sure you're running this through claude.ai or a supported environment.</div>`;
+  } finally {
+    advisorRunning = false;
+    document.querySelectorAll('.advisor-btn').forEach(b => b.classList.remove('running'));
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  ['i-date','e-date','ri-date','re-date'].forEach(id=>{
+    document.getElementById(id).value = today();
+  });
+  renderDashboard();
+  updateApiKeyUI();
+});
+</script>
+</body>
+</html>
