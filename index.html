@@ -1480,35 +1480,47 @@ let miniCharts = {};
 
 async function loadInvestmentPrices() {
   const label = document.getElementById('inv-last-updated');
-  if (label) label.textContent = '// fetching live prices\u2026';
-  const symbols = ASSET_KEYS.join(',');
-  const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-  const sparkUrl = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${symbols}&range=7d&interval=1d`;
-  const proxies = [
-    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-  ];
-  let fetched = false;
-  for (const makeProxy of proxies) {
-    try {
-      const [qRes, sRes] = await Promise.all([fetch(makeProxy(quoteUrl)), fetch(makeProxy(sparkUrl))]);
-      const qJson = await qRes.json();
-      const sJson = await sRes.json();
-      const qData = JSON.parse(typeof qJson.contents==='string' ? qJson.contents : JSON.stringify(qJson));
-      const sData = JSON.parse(typeof sJson.contents==='string' ? sJson.contents : JSON.stringify(sJson));
-      (qData?.quoteResponse?.result||[]).forEach(q => {
-        livePrices[q.symbol] = { price: q.regularMarketPrice||0, change: q.regularMarketChange||0, changePct: q.regularMarketChangePercent||0, history:[] };
-      });
-      (sData?.spark?.result||[]).forEach(s => {
-        const pts = s.response?.[0]?.indicators?.quote?.[0]?.close||[];
-        if (livePrices[s.symbol]) livePrices[s.symbol].history = pts.filter(p=>p!=null);
-      });
-      fetched = true;
-      if (label) label.textContent = `// prices updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
-      break;
-    } catch(e) { continue; }
+  if (label) label.textContent = '// fetching live prices…';
+
+  // Fetch each symbol individually via Yahoo chart endpoint — returns price + history in one call
+  // Try direct first (works on GitHub Pages), then fall back to corsproxy
+  async function fetchSymbol(symbol) {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=7d`;
+    const urls = [
+      url,
+      `https://corsproxy.io/?${encodeURIComponent(url)}`,
+      `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    ];
+    for (const u of urls) {
+      try {
+        const res  = await fetch(u, { headers: { 'Accept': 'application/json' } });
+        const json = await res.json();
+        // allorigins wraps in .contents
+        const data = json.contents ? JSON.parse(json.contents) : json;
+        const result = data?.chart?.result?.[0];
+        if (!result) continue;
+        const meta    = result.meta;
+        const closes  = result.indicators?.quote?.[0]?.close || [];
+        const price   = meta.regularMarketPrice || meta.chartPreviousClose || 0;
+        const prevClose = meta.chartPreviousClose || meta.previousClose || price;
+        const change  = price - prevClose;
+        const changePct = prevClose ? (change / prevClose) * 100 : 0;
+        const history = closes.filter(p => p != null);
+        return { price, change, changePct, history };
+      } catch(e) { continue; }
+    }
+    return null;
   }
-  if (!fetched && label) label.textContent = '// could not load live prices';
+
+  const results = await Promise.all(ASSET_KEYS.map(s => fetchSymbol(s)));
+  let anyFetched = false;
+  ASSET_KEYS.forEach((sym, i) => {
+    if (results[i]) { livePrices[sym] = results[i]; anyFetched = true; }
+  });
+
+  if (label) label.textContent = anyFetched
+    ? `// prices updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`
+    : '// could not load live prices';
   renderInvestments();
 }
 
