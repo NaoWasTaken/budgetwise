@@ -147,6 +147,39 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
 .filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
 .filter-btn:hover{background:var(--surface3);color:var(--white);}
 .filter-btn.active{background:var(--surface3);border-color:var(--border2);color:var(--white);}
+/* GOALS */
+.goals-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.goal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;position:relative;overflow:hidden;}
+.goal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);}
+.goal-card.complete::before{background:var(--green);}
+.goal-card.urgent::before{background:var(--yellow);}
+.goal-card.overdue::before{background:var(--red);}
+.goal-card-left{display:flex;flex-direction:column;gap:10px;}
+.goal-title{font-size:1rem;font-weight:800;letter-spacing:-.02em;}
+.goal-meta{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+.goal-meta-item{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text2);}
+.goal-meta-item span{color:var(--text);}
+.goal-meta-item.warn span{color:var(--yellow);}
+.goal-meta-item.good span{color:var(--green);}
+.goal-meta-item.over span{color:var(--red);}
+.goal-progress-wrap{margin-top:4px;}
+.goal-progress-track{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-bottom:5px;}
+.goal-progress-fill{height:100%;border-radius:2px;transition:width .4s ease;}
+.goal-progress-label{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:var(--text3);}
+.goal-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.goal-amount-big{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;color:var(--blue);}
+.goal-amount-big.complete{color:var(--green);}
+.goal-checkin-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.goal-checkin-btn:hover{border-color:var(--green);color:var(--green);}
+.goal-checkin-btn.checked{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);}
+.goal-delete-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:.75rem;font-family:'IBM Plex Mono',monospace;padding:4px 6px;transition:color .15s;}
+.goal-delete-btn:hover{color:var(--red);}
+.goal-badge{font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 8px;border-radius:4px;letter-spacing:.04em;display:inline-block;}
+.goal-badge-active{background:rgba(96,165,250,.1);color:var(--blue);}
+.goal-badge-complete{background:rgba(74,222,128,.1);color:var(--green);}
+.goal-badge-overdue{background:rgba(248,113,113,.1);color:var(--red);}
+.goal-badge-urgent{background:rgba(251,191,36,.1);color:var(--yellow);}
+.goal-empty{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.78rem;}
 /* INVESTMENTS */
 .inv-refresh-btn{background:none;border:1px solid var(--border2);color:var(--text2);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .inv-refresh-btn:hover{border-color:var(--text3);color:var(--white);}
@@ -197,6 +230,7 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
   <nav>
     <button class="active" onclick="showPage('dashboard',this)">Dashboard</button>
     <button onclick="showPage('add',this)">Add Entry</button>
+    <button onclick="showPage('goals',this)">Goals</button>
     <button onclick="showPage('report',this)">Report</button>
   </nav>
 </header>
@@ -272,6 +306,18 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
       <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th></th></tr></thead>
       <tbody id="onetime-tbody"></tbody>
     </table></div>
+  </div>
+
+  <!-- GOALS SUMMARY ON DASHBOARD -->
+  <div id="dash-goals-section" style="display:none;margin-bottom:8px">
+    <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div class="section-title" style="font-size:1.2rem">Savings Goals</div>
+        <div class="section-sub" style="margin-bottom:0">// set aside money towards your goals — not counted as expenses</div>
+      </div>
+      <button class="inv-refresh-btn" onclick="showPage('goals',document.querySelector('nav button:nth-child(3)'))">View All Goals →</button>
+    </div>
+    <div class="goals-grid" id="dash-goals-grid"></div>
   </div>
 
   <!-- INVESTMENTS -->
@@ -404,6 +450,53 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
       <div class="success-flash" id="flash-investment">Investment added ✓</div>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════ GOALS ═══════════════════════════════ -->
+<div class="page" id="page-goals">
+  <div class="section-title">Savings Goals</div>
+  <div class="section-sub">// set money aside for specific targets — not counted as expenses</div>
+
+  <!-- ADD GOAL FORM -->
+  <div class="form-card" style="margin-bottom:20px">
+    <div class="form-card-title">New Goal</div>
+    <div class="form-card-sub">// set a target, a deadline, and how often you want to set money aside</div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:14px;align-items:flex-end;flex-wrap:wrap;">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Goal Name</label>
+        <input type="text" id="goal-name" placeholder="e.g. Wedding road trip"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Target Amount ($)</label>
+        <div class="input-prefix"><span>$</span><input type="number" id="goal-target" placeholder="2000.00" min="0" step="0.01" oninput="updateGoalPreview()"/></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Goal Date</label>
+        <input type="date" id="goal-date" onchange="updateGoalPreview()"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Save every</label>
+        <select id="goal-freq" onchange="updateGoalPreview()">
+          <option value="monthly">Month</option>
+          <option value="weekly">Week</option>
+          <option value="daily">Day</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>You need to save</label>
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--green);font-weight:600;" id="goal-preview-val">--</div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>&nbsp;</label>
+        <button class="submit-btn" style="white-space:nowrap;margin-top:0" onclick="addGoal()">Add Goal</button>
+      </div>
+    </div>
+    <div class="success-flash" id="flash-goal">Goal added ✓</div>
+  </div>
+
+  <!-- GOALS LIST -->
+  <div class="goals-grid" id="goals-grid"></div>
+  <div class="goal-empty" id="goals-empty" style="display:none">No goals yet. Add one above to start saving towards something.</div>
 </div>
 
 <!-- ═══════════════════════════════ REPORT ═══════════════════════════════ -->
@@ -670,6 +763,8 @@ function projectBalance(snapVal, snapTime, now, entries) {
       if (e.id > snapMs && e.date <= nowDateStr) delta -= e.amount;
     }
   });
+  // Goal checkins made after snapshot also reduce the balance
+  delta -= goalCheckInsAfterSnap(snapMs);
   return snapVal + delta;
 }
 
@@ -682,6 +777,7 @@ function showPage(id, btn) {
   document.getElementById('page-' + id).classList.add('active');
   btn.classList.add('active');
   if (id === 'dashboard') renderDashboard();
+  if (id === 'goals')     renderGoals();
   if (id === 'report')    renderReport();
 }
 
@@ -1173,6 +1269,197 @@ function renderInvestments() {
 }
 
 // ══════════════════════════════════════════════════════
+// GOALS
+// ══════════════════════════════════════════════════════
+const loadGoals = () => JSON.parse(localStorage.getItem('bw_goals') || '[]');
+const saveGoals = d => localStorage.setItem('bw_goals', JSON.stringify(d));
+
+// Calculate required payment per period to hit target by deadline
+function calcGoalPayment(target, freq, deadlineStr) {
+  const now      = new Date();
+  const deadline = new Date(deadlineStr + 'T00:00:00');
+  const msLeft   = deadline - now;
+  if (msLeft <= 0) return null;
+  const daysLeft = msLeft / 86400000;
+  if (freq === 'daily')   return target / daysLeft;
+  if (freq === 'weekly')  return target / (daysLeft / 7);
+  if (freq === 'monthly') return target / (daysLeft / 30.44);
+  return null;
+}
+
+function updateGoalPreview() {
+  const target   = parseFloat(document.getElementById('goal-target').value) || 0;
+  const deadline = document.getElementById('goal-date').value;
+  const freq     = document.getElementById('goal-freq').value;
+  const el       = document.getElementById('goal-preview-val');
+  if (!target || !deadline) { el.textContent = '--'; return; }
+  const pmt = calcGoalPayment(target, freq, deadline);
+  if (!pmt || pmt <= 0) { el.textContent = 'past date'; el.style.color='var(--red)'; return; }
+  const freqLabel = freq === 'daily' ? '/day' : freq === 'weekly' ? '/week' : '/month';
+  el.textContent  = fmt(pmt) + freqLabel;
+  el.style.color  = 'var(--green)';
+}
+
+function addGoal() {
+  const name     = document.getElementById('goal-name').value.trim();
+  const target   = parseFloat(document.getElementById('goal-target').value);
+  const deadline = document.getElementById('goal-date').value;
+  const freq     = document.getElementById('goal-freq').value;
+  if (!name)              { alert('Enter a goal name.'); return; }
+  if (!target || target <= 0) { alert('Enter a target amount.'); return; }
+  if (!deadline)          { alert('Pick a goal date.'); return; }
+  const pmt = calcGoalPayment(target, freq, deadline);
+  if (!pmt || pmt <= 0)   { alert('Goal date must be in the future.'); return; }
+  const goals = loadGoals();
+  goals.push({ id: Date.now(), name, target, deadline, freq, payment: pmt, saved: 0, checkIns: [] });
+  saveGoals(goals);
+  document.getElementById('goal-name').value   = '';
+  document.getElementById('goal-target').value = '';
+  document.getElementById('goal-date').value   = '';
+  document.getElementById('goal-preview-val').textContent = '--';
+  flash('flash-goal');
+  renderGoals();
+  renderDashboard();
+}
+
+function deleteGoal(id) {
+  if (!confirm('Delete this goal?')) return;
+  saveGoals(loadGoals().filter(g => g.id !== id));
+  renderGoals();
+  renderDashboard();
+}
+
+// Check in: mark this period's payment as made
+// Stores a checkin with today's date so we only allow one per period
+function checkInGoal(id) {
+  const goals = loadGoals();
+  const g     = goals.find(g => g.id === id);
+  if (!g) return;
+  const todayStr   = today();
+  const periodKey  = getPeriodKey(g.freq, todayStr);
+  const alreadyDid = g.checkIns.some(c => c.period === periodKey);
+  if (alreadyDid) {
+    // Undo the checkin
+    g.checkIns = g.checkIns.filter(c => c.period !== periodKey);
+    g.saved    = Math.max(0, g.saved - g.payment);
+  } else {
+    g.checkIns.push({ period: periodKey, date: todayStr, amount: g.payment });
+    g.saved += g.payment;
+  }
+  saveGoals(goals);
+  renderGoals();
+  renderDashboard(); // balance updates since goal checkin affects bank balance
+}
+
+// Period key so we only allow one checkin per day/week/month
+function getPeriodKey(freq, dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  if (freq === 'daily')   return dateStr;
+  if (freq === 'monthly') return `${d.getFullYear()}-${d.getMonth()+1}`;
+  if (freq === 'weekly') {
+    // ISO week number
+    const jan1  = new Date(d.getFullYear(), 0, 1);
+    const week  = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+    return `${d.getFullYear()}-W${week}`;
+  }
+  return dateStr;
+}
+
+function isCheckedInToday(goal) {
+  return goal.checkIns.some(c => c.period === getPeriodKey(goal.freq, today()));
+}
+
+function renderGoalCard(g, compact=false) {
+  const now        = new Date();
+  const deadline   = new Date(g.deadline + 'T00:00:00');
+  const daysLeft   = Math.ceil((deadline - now) / 86400000);
+  const pct        = Math.min(100, (g.saved / g.target) * 100);
+  const isComplete = g.saved >= g.target;
+  const isOverdue  = daysLeft < 0 && !isComplete;
+  const isUrgent   = daysLeft <= 14 && daysLeft >= 0 && !isComplete;
+  const checkedIn  = isCheckedInToday(g);
+  const freqLabel  = g.freq === 'daily' ? 'day' : g.freq === 'weekly' ? 'week' : 'month';
+
+  // Recalculate payment from remaining
+  const remaining  = Math.max(0, g.target - g.saved);
+  const pmt        = isComplete ? 0 : (calcGoalPayment(remaining, g.freq, g.deadline) ?? g.payment);
+
+  let cardCls = 'goal-card';
+  let badge   = `<span class="goal-badge goal-badge-active">ACTIVE</span>`;
+  if (isComplete) { cardCls += ' complete'; badge = `<span class="goal-badge goal-badge-complete">COMPLETE ✓</span>`; }
+  else if (isOverdue) { cardCls += ' overdue'; badge = `<span class="goal-badge goal-badge-overdue">OVERDUE</span>`; }
+  else if (isUrgent)  { cardCls += ' urgent';  badge = `<span class="goal-badge goal-badge-urgent">URGENT</span>`; }
+
+  const daysStr   = isOverdue ? `<span style="color:var(--red)">${Math.abs(daysLeft)} days overdue</span>`
+                              : `<span style="color:${isUrgent?'var(--yellow)':'var(--text)'}">${daysLeft} days left</span>`;
+  const fillColor = isComplete ? 'var(--green)' : isOverdue ? 'var(--red)' : isUrgent ? 'var(--yellow)' : 'var(--blue)';
+
+  return `<div class="${cardCls}">
+    <div class="goal-card-left">
+      <div style="display:flex;align-items:center;gap:10px">${badge}<div class="goal-title">${g.name}</div></div>
+      <div class="goal-meta">
+        <div class="goal-meta-item">Due: <span>${fmtDate(g.deadline)}</span></div>
+        <div class="goal-meta-item">${daysStr}</div>
+        <div class="goal-meta-item">Saved: <span style="color:var(--green)">${fmt(g.saved)}</span> / <span>${fmt(g.target)}</span></div>
+        ${!isComplete ? `<div class="goal-meta-item">Need: <span style="color:var(--blue)">${fmt(pmt)}/${freqLabel}</span></div>` : ''}
+        <div class="goal-meta-item">Check-ins: <span>${g.checkIns.length}</span></div>
+      </div>
+      <div class="goal-progress-wrap">
+        <div class="goal-progress-track"><div class="goal-progress-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+        <div class="goal-progress-label">${pct.toFixed(1)}% saved${isComplete?' — goal reached!':''}</div>
+      </div>
+    </div>
+    <div class="goal-card-right">
+      <div class="goal-amount-big ${isComplete?'complete':''}">${fmt(g.target)}</div>
+      ${!isComplete ? `<button class="goal-checkin-btn${checkedIn?' checked':''}" onclick="checkInGoal(${g.id})">
+        ${checkedIn ? '✓ Paid this '+freqLabel : '+ Mark paid this '+freqLabel}
+      </button>` : `<div style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--green)">🎉 reached!</div>`}
+      <button class="goal-delete-btn" onclick="deleteGoal(${g.id})">delete</button>
+    </div>
+  </div>`;
+}
+
+function renderGoals() {
+  const goals = loadGoals();
+  // Full goals page
+  const grid  = document.getElementById('goals-grid');
+  const empty = document.getElementById('goals-empty');
+  if (grid) {
+    if (goals.length === 0) {
+      grid.innerHTML = '';
+      if (empty) empty.style.display = 'block';
+    } else {
+      if (empty) empty.style.display = 'none';
+      grid.innerHTML = goals.map(g => renderGoalCard(g)).join('');
+    }
+  }
+  // Dashboard summary — only active/urgent goals
+  const dashSection = document.getElementById('dash-goals-section');
+  const dashGrid    = document.getElementById('dash-goals-grid');
+  if (dashSection && dashGrid) {
+    const active = goals.filter(g => g.saved < g.target);
+    dashSection.style.display = goals.length > 0 ? 'block' : 'none';
+    dashGrid.innerHTML = active.length > 0
+      ? active.map(g => renderGoalCard(g, true)).join('')
+      : `<div style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--text3);padding:16px 0">All goals complete!</div>`;
+  }
+}
+
+// Total goal checkins made AFTER snapshot for balance projection
+function goalCheckInsAfterSnap(snapMs) {
+  const goals = loadGoals();
+  let total = 0;
+  goals.forEach(g => {
+    g.checkIns.forEach(c => {
+      // checkin date as ms (use noon to avoid timezone issues)
+      const cMs = new Date(c.date + 'T12:00:00').getTime();
+      if (cMs > snapMs) total += c.amount;
+    });
+  });
+  return total;
+}
+
+// ══════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
@@ -1180,6 +1467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const el = document.getElementById(id); if (el) el.value = today();
   });
   renderDashboard();
+  renderGoals();
   loadInvestmentPrices();
 });
 </script>
