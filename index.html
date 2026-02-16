@@ -655,17 +655,19 @@ function occsBetween(entry, from, to) {
 // Project a saved balance snapshot forward to `now` by replaying cash flows
 function projectBalance(snapVal, snapTime, now, entries) {
   let delta = 0;
+  const snapMs     = snapTime.getTime();
+  const nowDateStr = now.toISOString().split('T')[0];
   entries.forEach(e => {
     if (e.type === 'recurring-income') {
       delta += occsBetween(e, snapTime, now) * e.amount;
     } else if (e.type === 'recurring-expense') {
       delta -= occsBetween(e, snapTime, now) * e.amount;
     } else if (e.type === 'income') {
-      const d = new Date(e.date + 'T00:00:00');
-      if (d > snapTime && d <= now) delta += e.amount;
+      // Count if: created AFTER the snapshot AND dated on or before today
+      if (e.id > snapMs && e.date <= nowDateStr) delta += e.amount;
     } else if (e.type === 'expense') {
-      const d = new Date(e.date + 'T00:00:00');
-      if (d > snapTime && d <= now) delta -= e.amount;
+      // Count if: created AFTER the snapshot AND dated on or before today
+      if (e.id > snapMs && e.date <= nowDateStr) delta -= e.amount;
     }
   });
   return snapVal + delta;
