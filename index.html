@@ -1382,7 +1382,7 @@ function renderGoalCard(g, compact=false) {
 
   // Recalculate payment from remaining
   const remaining  = Math.max(0, g.target - g.saved);
-  const pmt        = isComplete ? 0 : (calcGoalPayment(remaining, g.freq, g.deadline) ?? g.payment);
+  const pmt        = g.payment; // always show the original payment set at creation
 
   let cardCls = 'goal-card';
   let badge   = `<span class="goal-badge goal-badge-active">ACTIVE</span>`;
