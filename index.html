@@ -31,7 +31,6 @@ main{flex:1;padding:28px 32px;max-width:1280px;width:100%;margin:0 auto;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .section-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:5px;}
 .section-sub{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.72rem;margin-bottom:24px;}
-/* BALANCE BAR */
 .balance-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;margin-bottom:20px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;}
 .balance-main{display:flex;flex-direction:column;gap:4px;}
 .balance-label{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
@@ -50,7 +49,6 @@ main{flex:1;padding:28px 32px;max-width:1280px;width:100%;margin:0 auto;}
 .balance-input:focus{border-color:var(--text3);}
 .set-balance-btn{background:var(--white);color:var(--bg);border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
 .set-balance-btn:hover{opacity:.85;}
-/* MONTH PROGRESS */
 .month-progress-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin-bottom:20px;}
 .mp-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
 .mp-title{font-size:.95rem;font-weight:700;}
@@ -59,7 +57,6 @@ main{flex:1;padding:28px 32px;max-width:1280px;width:100%;margin:0 auto;}
 .progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .5s ease;}
 .mp-dates{display:flex;justify-content:space-between;margin-top:8px;}
 .mp-date{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--text3);}
-/* SUMMARY CARDS */
 .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;border-top:2px solid var(--border);}
 .summary-card.inc{border-top-color:var(--green);}
@@ -73,7 +70,6 @@ main{flex:1;padding:28px 32px;max-width:1280px;width:100%;margin:0 auto;}
 .card-value.red{color:var(--red);}
 .card-value.yellow{color:var(--yellow);}
 .card-sub{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);}
-/* SPLIT ROW */
 .split-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
 .split-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;}
 .split-title{font-size:.82rem;font-weight:700;letter-spacing:.02em;margin-bottom:14px;color:var(--text2);}
@@ -84,12 +80,10 @@ main{flex:1;padding:28px 32px;max-width:1280px;width:100%;margin:0 auto;}
 .sri-amt{font-family:'IBM Plex Mono',monospace;font-size:.88rem;font-weight:500;}
 .sri-amt.green{color:var(--green);}
 .sri-amt.red{color:var(--red);}
-/* CHARTS */
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
 .chart-title{font-size:.82rem;font-weight:700;margin-bottom:16px;color:var(--text2);}
 .chart-wrap{height:220px;position:relative;}
-/* TABLES */
 .table-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
 .table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .table-title{font-size:.88rem;font-weight:700;}
@@ -119,7 +113,6 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
 .override-btn.active-unpaid{border-color:var(--red);color:var(--red);}
 .delete-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:.8rem;padding:4px 8px;border-radius:4px;transition:color .15s;}
 .delete-btn:hover{color:var(--red);}
-/* ADD ENTRY */
 .add-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
 .form-card-title{font-size:.95rem;font-weight:700;margin-bottom:4px;}
@@ -142,12 +135,10 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
 .monthly-preview{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;}
 .preview-label{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
 .monthly-preview span{font-size:1.1rem;font-weight:800;color:var(--green);}
-/* REPORT */
 .report-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
 .filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
 .filter-btn:hover{background:var(--surface3);color:var(--white);}
 .filter-btn.active{background:var(--surface3);border-color:var(--border2);color:var(--white);}
-/* GOALS */
 .goals-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
 .goal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;position:relative;overflow:hidden;}
 .goal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);}
@@ -180,7 +171,6 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
 .goal-badge-overdue{background:rgba(248,113,113,.1);color:var(--red);}
 .goal-badge-urgent{background:rgba(251,191,36,.1);color:var(--yellow);}
 .goal-empty{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.78rem;}
-/* INVESTMENTS */
 .inv-refresh-btn{background:none;border:1px solid var(--border2);color:var(--text2);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .inv-refresh-btn:hover{border-color:var(--text3);color:var(--white);}
 .inv-summary-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:0;}
@@ -235,12 +225,9 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
   </nav>
 </header>
 <main>
-
-<!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
 <div class="page active" id="page-dashboard">
   <div class="section-title">Overview</div>
   <div class="section-sub" id="dash-date"></div>
-
   <div class="balance-bar">
     <div class="balance-main">
       <div class="balance-label">Estimated Bank Balance</div>
@@ -265,7 +252,6 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
       <button class="set-balance-btn" onclick="setBalance()">Set Balance</button>
     </div>
   </div>
-
   <div class="month-progress-card">
     <div class="mp-header">
       <div class="mp-title" id="mp-month-label">Month Progress</div>
@@ -274,24 +260,20 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     <div class="progress-track"><div class="progress-fill" id="mp-fill" style="width:0%"></div></div>
     <div class="mp-dates"><span class="mp-date" id="mp-start"></span><span class="mp-date" id="mp-today-label"></span><span class="mp-date" id="mp-end"></span></div>
   </div>
-
   <div class="summary-grid">
     <div class="summary-card inc"><div class="card-label">Monthly Income</div><div class="card-value green" id="s-income">$0.00</div><div class="card-sub" id="s-income-sub">estimated this month</div></div>
     <div class="summary-card exp"><div class="card-label">Monthly Expenses</div><div class="card-value red" id="s-expense">$0.00</div><div class="card-sub" id="s-expense-sub">estimated this month</div></div>
     <div class="summary-card net" id="s-net-card"><div class="card-label">Net This Month</div><div class="card-value" id="s-net">$0.00</div><div class="card-sub">income minus expenses</div></div>
     <div class="summary-card spend"><div class="card-label">Spending Money Left</div><div class="card-value yellow" id="s-spending">$0.00</div><div class="card-sub" id="s-spending-sub">after all remaining expenses</div></div>
   </div>
-
   <div class="split-row">
     <div class="split-card"><div class="split-title">Income This Month</div><div id="inc-split-rows"></div></div>
     <div class="split-card"><div class="split-title">Expenses This Month</div><div id="exp-split-rows"></div></div>
   </div>
-
   <div class="charts-grid">
     <div class="chart-card"><div class="chart-title">Income vs Expenses</div><div class="chart-wrap"><canvas id="barChart"></canvas></div></div>
     <div class="chart-card"><div class="chart-title">Expense Breakdown</div><div class="chart-wrap"><canvas id="donutChart"></canvas></div></div>
   </div>
-
   <div class="table-section">
     <div class="table-header"><div class="table-title">Recurring — Status This Month</div></div>
     <div class="table-wrap"><table>
@@ -299,7 +281,6 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
       <tbody id="recurring-tbody"></tbody>
     </table></div>
   </div>
-
   <div class="table-section">
     <div class="table-header"><div class="table-title">One-Time Entries This Month</div></div>
     <div class="table-wrap"><table>
@@ -307,24 +288,20 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
       <tbody id="onetime-tbody"></tbody>
     </table></div>
   </div>
-
-  <!-- GOALS SUMMARY ON DASHBOARD -->
   <div id="dash-goals-section" style="display:none;margin-bottom:8px">
     <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
       <div>
         <div class="section-title" style="font-size:1.2rem">Savings Goals</div>
-        <div class="section-sub" style="margin-bottom:0">// set aside money towards your goals — not counted as expenses</div>
+        <div class="section-sub" style="margin-bottom:0">set aside money towards your goals — not counted as expenses</div>
       </div>
       <button class="inv-refresh-btn" onclick="showPage('goals',document.querySelector('nav button:nth-child(3)'))">View All Goals →</button>
     </div>
     <div class="goals-grid" id="dash-goals-grid"></div>
   </div>
-
-  <!-- INVESTMENTS -->
   <div style="margin-top:8px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <div>
       <div class="section-title" style="font-size:1.2rem">Investments</div>
-      <div class="section-sub" style="margin-bottom:0" id="inv-last-updated">// loading live prices…</div>
+      <div class="section-sub" style="margin-bottom:0" id="inv-last-updated">loading live prices…</div>
     </div>
     <button class="inv-refresh-btn" onclick="loadInvestmentPrices()">↻ Refresh Prices</button>
   </div>
@@ -346,15 +323,13 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     </table></div>
   </div>
 </div>
-
-<!-- ═══════════════════════════════ ADD ENTRY ═══════════════════════════════ -->
 <div class="page" id="page-add">
   <div class="section-title">Add Entry</div>
-  <div class="section-sub">// record a new income or expense</div>
+  <div class="section-sub">record a new income or expense</div>
   <div class="add-grid">
     <div class="form-card">
       <div class="form-card-title">Income</div>
-      <div class="form-card-sub">// one-time income entry</div>
+      <div class="form-card-sub">one-time income entry</div>
       <div class="form-group"><label>Amount</label><div class="input-prefix"><span>$</span><input type="number" id="i-amount" placeholder="0.00" min="0" step="0.01"/></div></div>
       <div class="form-group"><label>Description</label><input type="text" id="i-desc" placeholder="e.g. Freelance payment"/></div>
       <div class="form-group"><label>Date</label><input type="date" id="i-date"/></div>
@@ -363,7 +338,7 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     </div>
     <div class="form-card">
       <div class="form-card-title">Expense</div>
-      <div class="form-card-sub">// one-time expense entry</div>
+      <div class="form-card-sub">one-time expense entry</div>
       <div class="form-group"><label>Amount</label><div class="input-prefix"><span>$</span><input type="number" id="e-amount" placeholder="0.00" min="0" step="0.01"/></div></div>
       <div class="form-group"><label>Description</label><input type="text" id="e-desc" placeholder="e.g. Groceries"/></div>
       <div class="form-group"><label>Date</label><input type="date" id="e-date"/></div>
@@ -372,7 +347,7 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     </div>
     <div class="form-card">
       <div class="form-card-title">Recurring Income</div>
-      <div class="form-card-sub">// auto-calculates estimated monthly total</div>
+      <div class="form-card-sub">auto-calculates estimated monthly total</div>
       <div class="form-group"><label>Amount per occurrence</label><div class="input-prefix"><span>$</span><input type="number" id="ri-amount" placeholder="0.00" min="0" step="0.01" oninput="updatePreview('ri')"/></div></div>
       <div class="form-group"><label>Description</label><input type="text" id="ri-desc" placeholder="e.g. Salary, Tips"/></div>
       <div class="form-group"><label>Frequency</label>
@@ -401,7 +376,7 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     </div>
     <div class="form-card">
       <div class="form-card-title">Recurring Expense</div>
-      <div class="form-card-sub">// auto-calculates estimated monthly total</div>
+      <div class="form-card-sub">auto-calculates estimated monthly total</div>
       <div class="form-group"><label>Amount per occurrence</label><div class="input-prefix"><span>$</span><input type="number" id="re-amount" placeholder="0.00" min="0" step="0.01" oninput="updatePreview('re')"/></div></div>
       <div class="form-group"><label>Description</label><input type="text" id="re-desc" placeholder="e.g. Rent, Netflix"/></div>
       <div class="form-group"><label>Frequency</label>
@@ -428,10 +403,9 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
       <button class="submit-btn" onclick="addRecurring('expense')">Add Recurring Expense</button>
       <div class="success-flash" id="flash-recurring-expense">Entry added ✓</div>
     </div>
-    <!-- INVESTMENT — full width -->
     <div class="form-card" style="grid-column:1/-1">
       <div class="form-card-title">Investment</div>
-      <div class="form-card-sub">// track money you've put into BTC, ETFs, or other assets — visible on dashboard</div>
+      <div class="form-card-sub">track money you've put into BTC, ETFs, or other assets — visible on dashboard</div>
       <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr auto;gap:14px;align-items:flex-end;flex-wrap:wrap;">
         <div class="form-group" style="margin-bottom:0"><label>Asset</label>
           <select id="inv-asset">
@@ -451,16 +425,12 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     </div>
   </div>
 </div>
-
-<!-- ═══════════════════════════════ GOALS ═══════════════════════════════ -->
 <div class="page" id="page-goals">
   <div class="section-title">Savings Goals</div>
-  <div class="section-sub">// set money aside for specific targets — not counted as expenses</div>
-
-  <!-- ADD GOAL FORM -->
+  <div class="section-sub">set money aside for specific targets — not counted as expenses</div>
   <div class="form-card" style="margin-bottom:20px">
     <div class="form-card-title">New Goal</div>
-    <div class="form-card-sub">// set a target, a deadline, and how often you want to set money aside</div>
+    <div class="form-card-sub">set a target, a deadline, and how often you want to set money aside</div>
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:14px;align-items:flex-end;flex-wrap:wrap;">
       <div class="form-group" style="margin-bottom:0">
         <label>Goal Name</label>
@@ -493,16 +463,12 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     </div>
     <div class="success-flash" id="flash-goal">Goal added ✓</div>
   </div>
-
-  <!-- GOALS LIST -->
   <div class="goals-grid" id="goals-grid"></div>
   <div class="goal-empty" id="goals-empty" style="display:none">No goals yet. Add one above to start saving towards something.</div>
 </div>
-
-<!-- ═══════════════════════════════ REPORT ═══════════════════════════════ -->
 <div class="page" id="page-report">
   <div class="section-title">Full Report</div>
-  <div class="section-sub">// all transactions</div>
+  <div class="section-sub">all transactions</div>
   <div class="report-controls">
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('income',this)">Income</button>
@@ -515,34 +481,24 @@ tr.empty-row td{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-si
     <tbody id="report-tbody"></tbody>
   </table></div>
 </div>
-
 </main>
 <script>
-// ══════════════════════════════════════════════════════
-// STORAGE
-// ══════════════════════════════════════════════════════
 const load     = () => JSON.parse(localStorage.getItem('bw_entries')     || '[]');
 const save     = d  => localStorage.setItem('bw_entries',     JSON.stringify(d));
 const loadMeta = () => JSON.parse(localStorage.getItem('bw_meta')        || '{}');
 const saveMeta = m  => localStorage.setItem('bw_meta',        JSON.stringify(m));
 const loadInv  = () => JSON.parse(localStorage.getItem('bw_investments') || '[]');
 const saveInv  = d  => localStorage.setItem('bw_investments', JSON.stringify(d));
-
-// ══════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════
 const fmt     = n => '$' + Math.abs(parseFloat(n)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 const today   = () => new Date().toISOString().split('T')[0];
 const fmtDate = d => { if (!d) return ''; const [y,m,day] = d.split('-'); return `${m}/${day}/${y}`; };
 const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
 function getMonthBounds() {
   const now   = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1);
   const end   = new Date(now.getFullYear(), now.getMonth()+1, 0, 23, 59, 59);
   return { now, start, end, day: now.getDate(), totalDays: end.getDate() };
 }
-
 function calcMonthly(amount, freq, days) {
   if (freq === 'monthly')  return amount;
   if (freq === 'biweekly') return amount * 2;
@@ -550,7 +506,6 @@ function calcMonthly(amount, freq, days) {
   if (freq === 'weekly')   return amount * (days||[]).length * (365.25/12/7);
   return amount;
 }
-
 function scheduleLabel(freq, days) {
   if (freq === 'monthly')  return 'Monthly';
   if (freq === 'biweekly') return 'Bi-weekly';
@@ -558,17 +513,12 @@ function scheduleLabel(freq, days) {
   if (freq === 'weekly')   return 'Weekly · ' + (days||[]).map(d => DAY_NAMES[d]).join(', ');
   return freq;
 }
-
 function flash(id) {
   const el = document.getElementById(id);
   if (!el) return;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2400);
 }
-
-// ══════════════════════════════════════════════════════
-// FREQUENCY UI
-// ══════════════════════════════════════════════════════
 function updateFreqUI(p) {
   document.getElementById(p+'-days-group').style.display =
     document.getElementById(p+'-freq').value === 'weekly' ? 'block' : 'none';
@@ -587,10 +537,6 @@ function updatePreview(p) {
   document.getElementById(p+'-preview').style.display = amt > 0 ? 'block' : 'none';
   document.getElementById(p+'-preview-val').textContent = fmt(mo) + '/mo';
 }
-
-// ══════════════════════════════════════════════════════
-// ADD ENTRIES
-// ══════════════════════════════════════════════════════
 function addOneTime(type) {
   const p = type === 'income' ? 'i' : 'e';
   const amount = parseFloat(document.getElementById(p+'-amount').value);
@@ -606,7 +552,6 @@ function addOneTime(type) {
   flash('flash-' + type);
   renderDashboard();
 }
-
 function addRecurring(type) {
   const p      = type === 'income' ? 'ri' : 're';
   const amount = parseFloat(document.getElementById(p+'-amount').value);
@@ -627,17 +572,12 @@ function addRecurring(type) {
   flash('flash-recurring-' + type);
   renderDashboard();
 }
-
 function deleteEntry(id) {
   if (!confirm('Delete this entry?')) return;
   save(load().filter(e => e.id !== id));
   renderDashboard();
   renderReport();
 }
-
-// ══════════════════════════════════════════════════════
-// OCCURRENCES (for recurring status)
-// ══════════════════════════════════════════════════════
 function occurrencesSoFar(entry) {
   const { now, start, day } = getMonthBounds();
   const freq = entry.freq;
@@ -657,7 +597,6 @@ function occurrencesSoFar(entry) {
   }
   return 0;
 }
-
 function occurrencesTotal(entry) {
   const { start, end } = getMonthBounds();
   const freq = entry.freq;
@@ -677,10 +616,6 @@ function occurrencesTotal(entry) {
   }
   return 1;
 }
-
-// ══════════════════════════════════════════════════════
-// MANUAL STATUS OVERRIDE
-// ══════════════════════════════════════════════════════
 function statusKey(id) {
   const n = new Date();
   return `status_${id}_${n.getFullYear()}_${n.getMonth()+1}`;
@@ -699,31 +634,21 @@ function autoStatus(e) {
   return 'partial';
 }
 function effectiveStatus(e) { return getManualStatus(e.id) || autoStatus(e); }
-
-// ══════════════════════════════════════════════════════
-// BANK BALANCE — SET SNAPSHOT + PROJECT FORWARD
-// The key insight: we store (value, timestamp). On every
-// render we replay all cash flows since that timestamp
-// so the balance auto-updates as days pass.
-// ══════════════════════════════════════════════════════
 function setBalance() {
   const val = parseFloat(document.getElementById('bank-input').value);
   if (isNaN(val)) { alert('Enter a valid number.'); return; }
   const m = loadMeta();
   m.bankBalance = val;
-  m.bankSet     = new Date().toISOString(); // timestamp of when balance was set
+  m.bankSet     = new Date().toISOString();
   saveMeta(m);
   document.getElementById('bank-input').value = '';
   renderDashboard();
 }
-
-// Count occurrences of a recurring entry strictly after `from` and on/before `to`
 function occsBetween(entry, from, to) {
   const freq = entry.freq;
   const sd   = new Date(entry.date + 'T00:00:00');
   let n = 0;
   if (freq === 'monthly') {
-    // hits on sd.getDate() each month
     let c = new Date(from.getFullYear(), from.getMonth(), sd.getDate());
     if (c <= from) c = new Date(c.getFullYear(), c.getMonth() + 1, sd.getDate());
     while (c <= to) { n++; c = new Date(c.getFullYear(), c.getMonth() + 1, sd.getDate()); }
@@ -732,7 +657,6 @@ function occsBetween(entry, from, to) {
     while (c <= from) c.setDate(c.getDate() + 14);
     while (c <= to)   { n++; c.setDate(c.getDate() + 14); }
   } else if (freq === 'daily') {
-    // days strictly after `from` up to `to`
     const msDay   = 86400000;
     const fromDay = new Date(from.getFullYear(), from.getMonth(), from.getDate());
     const toDay   = new Date(to.getFullYear(),   to.getMonth(),   to.getDate());
@@ -744,8 +668,6 @@ function occsBetween(entry, from, to) {
   }
   return n;
 }
-
-// Project a saved balance snapshot forward to `now` by replaying cash flows
 function projectBalance(snapVal, snapTime, now, entries) {
   let delta = 0;
   const snapMs     = snapTime.getTime();
@@ -756,21 +678,14 @@ function projectBalance(snapVal, snapTime, now, entries) {
     } else if (e.type === 'recurring-expense') {
       delta -= occsBetween(e, snapTime, now) * e.amount;
     } else if (e.type === 'income') {
-      // Count if: created AFTER the snapshot AND dated on or before today
       if (e.id > snapMs && e.date <= nowDateStr) delta += e.amount;
     } else if (e.type === 'expense') {
-      // Count if: created AFTER the snapshot AND dated on or before today
       if (e.id > snapMs && e.date <= nowDateStr) delta -= e.amount;
     }
   });
-  // Goal checkins made after snapshot also reduce the balance
   delta -= goalCheckInsAfterSnap(snapMs);
   return snapVal + delta;
 }
-
-// ══════════════════════════════════════════════════════
-// NAV
-// ══════════════════════════════════════════════════════
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -780,19 +695,13 @@ function showPage(id, btn) {
   if (id === 'goals')     renderGoals();
   if (id === 'report')    renderReport();
 }
-
-// ══════════════════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════════════════
 function renderDashboard() {
   const entries = load();
   const meta    = loadMeta();
   const { now, start, end, day, totalDays } = getMonthBounds();
   const monthPct = Math.round((day / totalDays) * 100);
-
-  // Date + progress
   document.getElementById('dash-date').textContent =
-    '// ' + now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   const mn = now.toLocaleDateString('en-US', { month:'long', year:'numeric' });
   document.getElementById('mp-month-label').textContent = mn + ' — Month Progress';
   document.getElementById('mp-pct').textContent   = monthPct + '% through the month';
@@ -800,18 +709,12 @@ function renderDashboard() {
   document.getElementById('mp-start').textContent = '1st';
   document.getElementById('mp-today-label').textContent = 'Today: ' + day + (day===1?'st':day===2?'nd':day===3?'rd':'th');
   document.getElementById('mp-end').textContent   = totalDays + 'th';
-
-  // Categorise
   const recInc = entries.filter(e => e.type === 'recurring-income');
   const recExp = entries.filter(e => e.type === 'recurring-expense');
   const otInc  = entries.filter(e => e.type === 'income');
   const otExp  = entries.filter(e => e.type === 'expense');
-
-  // This month's one-time
   const tmOtInc = otInc.filter(e => { const d = new Date(e.date+'T00:00:00'); return d >= start && d <= end; });
   const tmOtExp = otExp.filter(e => { const d = new Date(e.date+'T00:00:00'); return d >= start && d <= end; });
-
-  // Monthly totals
   const recIncMo = recInc.reduce((a,e) => a + e.monthlyAmount, 0);
   const recExpMo = recExp.reduce((a,e) => a + e.monthlyAmount, 0);
   const otIncMo  = tmOtInc.reduce((a,e) => a + e.amount, 0);
@@ -819,8 +722,6 @@ function renderDashboard() {
   const totalIncMo = recIncMo + otIncMo;
   const totalExpMo = recExpMo + otExpMo;
   const netMo      = totalIncMo - totalExpMo;
-
-  // Done / left (recurring)
   let recIncDone=0, recExpDone=0, recIncLeft=0, recExpLeft=0;
   recInc.forEach(e => {
     const st = effectiveStatus(e), oSF = occurrencesSoFar(e), oT = occurrencesTotal(e), oL = Math.max(0,oT-oSF);
@@ -834,21 +735,14 @@ function renderDashboard() {
     else if (st==='partial') { recExpDone += oSF*e.amount; recExpLeft += oL*e.amount; }
     else { recExpLeft += e.monthlyAmount; }
   });
-
-  // Done / left (one-time)
   const otIncDone = tmOtInc.filter(e => new Date(e.date+'T00:00:00') <= now).reduce((a,e)=>a+e.amount,0);
   const otExpDone = tmOtExp.filter(e => new Date(e.date+'T00:00:00') <= now).reduce((a,e)=>a+e.amount,0);
   const otIncLeft = tmOtInc.filter(e => new Date(e.date+'T00:00:00') >  now).reduce((a,e)=>a+e.amount,0);
   const otExpLeft = tmOtExp.filter(e => new Date(e.date+'T00:00:00') >  now).reduce((a,e)=>a+e.amount,0);
-
   const totalIncDone = recIncDone + otIncDone;
   const totalExpDone = recExpDone + otExpDone;
   const totalIncLeft = recIncLeft + otIncLeft;
   const totalExpLeft = recExpLeft + otExpLeft;
-
-  // ── Projected bank balance ──────────────────────────────────────────────
-  // If a snapshot exists, replay all cash flows since snapshot time → now.
-  // This means the balance automatically advances each day without user input.
   let bankBal;
   const noteEl = document.getElementById('bal-note');
   if (meta.bankBalance != null && meta.bankSet) {
@@ -861,8 +755,6 @@ function renderDashboard() {
     bankBal = totalIncDone - totalExpDone;
     noteEl.textContent = 'estimated from entries — set your actual balance above to start tracking';
   }
-
-  // ── Forward simulation for "safe to spend" ─────────────────────────────
   function futureDates(entry) {
     const dates = [], freq = entry.freq;
     const sd = entry.date ? new Date(entry.date+'T00:00:00') : start;
@@ -883,13 +775,11 @@ function renderDashboard() {
     }
     return dates;
   }
-
   const cashEvents = [];
   recInc.forEach(e => futureDates(e).forEach(d => cashEvents.push({ date:d, amount: e.amount  })));
   recExp.forEach(e => futureDates(e).forEach(d => cashEvents.push({ date:d, amount:-e.amount  })));
   tmOtInc.filter(e => new Date(e.date+'T00:00:00') > now).forEach(e => cashEvents.push({ date:new Date(e.date+'T00:00:00'), amount: e.amount  }));
   tmOtExp.filter(e => new Date(e.date+'T00:00:00') > now).forEach(e => cashEvents.push({ date:new Date(e.date+'T00:00:00'), amount:-e.amount  }));
-
   const byDay = {};
   cashEvents.forEach(ev => {
     const k = ev.date.toDateString();
@@ -902,8 +792,6 @@ function renderDashboard() {
     if (running < minBal) minBal = running;
   });
   const spendingLeft = Math.max(0, minBal);
-
-  // Update DOM
   const balEl = document.getElementById('bal-amount');
   balEl.textContent = fmt(bankBal);
   balEl.className   = 'balance-amount ' + (bankBal >= 0 ? 'green' : 'red');
@@ -912,7 +800,6 @@ function renderDashboard() {
   document.getElementById('bal-exp-left').textContent      = '-' + fmt(totalExpLeft);
   document.getElementById('bal-inc-done').textContent      = '+' + fmt(totalIncDone);
   document.getElementById('bal-exp-done').textContent      = '-' + fmt(totalExpDone);
-
   document.getElementById('s-income').textContent     = fmt(totalIncMo);
   document.getElementById('s-income-sub').textContent = fmt(totalIncDone)+' received · '+fmt(totalIncLeft)+' coming';
   document.getElementById('s-expense').textContent    = fmt(totalExpMo);
@@ -922,35 +809,28 @@ function renderDashboard() {
   netEl.className    = 'card-value ' + (netMo>=0?'green':'red');
   document.getElementById('s-net-card').className = 'summary-card net ' + (netMo>=0?'pos':'neg');
   document.getElementById('s-spending').textContent = fmt(spendingLeft);
-
-  // Split rows
   let incR='';
   recInc.forEach(e => { incR += splitRow(e.description, e.monthlyAmount, 'green', scheduleLabel(e.freq,e.days)); });
   if (tmOtInc.length) incR += splitRow('One-time Income', otIncMo, 'green', tmOtInc.length+' entr'+(tmOtInc.length===1?'y':'ies'));
   if (!incR) incR = emptyRow('No income entries');
   incR += splitRow('Total', totalIncMo, 'green', '', true);
   document.getElementById('inc-split-rows').innerHTML = incR;
-
   let expR='';
   recExp.forEach(e => { expR += splitRow(e.description, e.monthlyAmount, 'red', scheduleLabel(e.freq,e.days)); });
   if (tmOtExp.length) expR += splitRow('One-time Expenses', otExpMo, 'red', tmOtExp.length+' entr'+(tmOtExp.length===1?'y':'ies'));
   if (!expR) expR = emptyRow('No expense entries');
   expR += splitRow('Total', totalExpMo, 'red', '', true);
   document.getElementById('exp-split-rows').innerHTML = expR;
-
   renderCharts(entries, totalIncMo, totalExpMo, recExpMo, otExpMo, recExp, tmOtExp);
-
   const recAll = [...recInc,...recExp];
   document.getElementById('recurring-tbody').innerHTML = recAll.length
     ? recAll.map(e => recurringRow(e)).join('')
     : '<tr class="empty-row"><td colspan="7">No recurring entries yet.</td></tr>';
-
   const otAll = [...tmOtInc,...tmOtExp].sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('onetime-tbody').innerHTML = otAll.length
     ? otAll.map(e => oneTimeRow(e)).join('')
     : '<tr class="empty-row"><td colspan="5">No one-time entries this month.</td></tr>';
 }
-
 function emptyRow(msg) {
   return `<div style="color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:.75rem;padding:10px 0">${msg}</div>`;
 }
@@ -961,10 +841,6 @@ function splitRow(label, amt, color, sub, isTotal=false) {
     <div class="sri-amt ${color}">${isTotal?(amt>=0?'+':'-'):''}${fmt(amt)}</div>
   </div>`;
 }
-
-// ══════════════════════════════════════════════════════
-// ROW RENDERERS
-// ══════════════════════════════════════════════════════
 function recurringRow(e) {
   const st  = effectiveStatus(e);
   const oSF = occurrencesSoFar(e), oT = occurrencesTotal(e);
@@ -986,7 +862,6 @@ function recurringRow(e) {
     </div></td>
   </tr>`;
 }
-
 function oneTimeRow(e) {
   const isInc = e.type === 'income';
   return `<tr>
@@ -997,10 +872,6 @@ function oneTimeRow(e) {
     <td><button class="delete-btn" onclick="deleteEntry(${e.id})">✕</button></td>
   </tr>`;
 }
-
-// ══════════════════════════════════════════════════════
-// CHARTS
-// ══════════════════════════════════════════════════════
 let barCI=null, donutCI=null;
 function renderCharts(entries, totalIncMo, totalExpMo, recExpMo, otExpMo, recExp, otExpEntries) {
   const GRID='rgba(255,255,255,0.04)', TICK={color:'#555',font:{family:'IBM Plex Mono',size:10}};
@@ -1031,10 +902,6 @@ function renderCharts(entries, totalIncMo, totalExpMo, recExpMo, otExpMo, recExp
     });
   }
 }
-
-// ══════════════════════════════════════════════════════
-// REPORT
-// ══════════════════════════════════════════════════════
 let currentFilter = 'all';
 function setFilter(f, btn) {
   currentFilter = f;
@@ -1062,10 +929,6 @@ function renderReport() {
       }).join('')
     : '<tr class="empty-row"><td colspan="7">No entries found.</td></tr>';
 }
-
-// ══════════════════════════════════════════════════════
-// INVESTMENTS
-// ══════════════════════════════════════════════════════
 const ASSETS = {
   'BTC-USD': { name:'Bitcoin',              ticker:'BTC', icon:'₿',   desc:'High volatility crypto. Highest potential gains, highest risk. Best for money you can afford to lose.', rank:1 },
   'VOO':     { name:'Vanguard S&P 500',     ticker:'VOO', icon:'S&P', desc:'Tracks 500 largest US companies. The gold standard — low fees, historically ~10% annual return.', rank:2 },
@@ -1075,11 +938,9 @@ const ASSETS = {
 };
 const ASSET_KEYS = Object.keys(ASSETS);
 let livePrices = {}, miniCharts = {};
-
 async function loadInvestmentPrices() {
   const label = document.getElementById('inv-last-updated');
-  if (label) label.textContent = '// fetching live prices…';
-
+  if (label) label.textContent = 'fetching live prices…';
   async function fetchSymbol(sym) {
     const url  = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=7d`;
     const urls = [
@@ -1105,16 +966,14 @@ async function loadInvestmentPrices() {
     }
     return null;
   }
-
   const results = await Promise.all(ASSET_KEYS.map(s => fetchSymbol(s)));
   let anyFetched = false;
   ASSET_KEYS.forEach((sym,i) => { if (results[i]) { livePrices[sym]=results[i]; anyFetched=true; }});
   if (label) label.textContent = anyFetched
-    ? `// prices updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`
-    : '// could not load live prices';
+    ? `prices updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`
+    : 'could not load live prices';
   renderInvestments();
 }
-
 function addInvestment() {
   const symbol = document.getElementById('inv-asset').value;
   const amount = parseFloat(document.getElementById('inv-amount').value);
@@ -1130,17 +989,14 @@ function addInvestment() {
   flash('flash-investment');
   renderInvestments();
 }
-
 function deleteInvestment(id) {
   if (!confirm('Remove this investment?')) return;
   saveInv(loadInv().filter(i => i.id !== id));
   renderInvestments();
 }
-
 function renderInvestments() {
   const investments = loadInv();
   const hasHoldings = investments.length > 0;
-
   const holding = {};
   ASSET_KEYS.forEach(s => { holding[s] = { totalInvested:0, totalUnits:0 }; });
   investments.forEach(inv => {
@@ -1155,12 +1011,10 @@ function renderInvestments() {
     h.gainLoss     = h.currentValue - h.totalInvested;
     h.returnPct    = h.totalInvested > 0 ? (h.gainLoss / h.totalInvested) * 100 : 0;
   });
-
   const totalInvested = ASSET_KEYS.reduce((a,s)=>a+holding[s].totalInvested,0);
   const totalCurrent  = ASSET_KEYS.reduce((a,s)=>a+holding[s].currentValue,0);
   const totalGain     = totalCurrent - totalInvested;
   const totalReturn   = totalInvested > 0 ? (totalGain/totalInvested)*100 : 0;
-
   const summBar = document.getElementById('inv-summary-bar');
   if (summBar) {
     summBar.style.display = hasHoldings ? 'flex' : 'none';
@@ -1171,18 +1025,14 @@ function renderInvestments() {
       const rpEl = document.getElementById('inv-return-pct');  rpEl.textContent=(totalReturn>=0?'+':'')+totalReturn.toFixed(2)+'%'; rpEl.style.color=totalReturn>=0?'var(--green)':'var(--red)';
     }
   }
-
   const withH    = ASSET_KEYS.filter(s=>holding[s].totalInvested>0).sort((a,b)=>holding[b].currentValue-holding[a].currentValue);
   const withoutH = ASSET_KEYS.filter(s=>holding[s].totalInvested===0).sort((a,b)=>ASSETS[a].rank-ASSETS[b].rank);
   const sorted   = [...withH, ...withoutH];
-
   Object.values(miniCharts).forEach(c => { try { c.destroy(); } catch(e){} });
   miniCharts = {};
-
   const grid = document.getElementById('inv-cards-grid');
   if (!grid) return;
   grid.innerHTML = '';
-
   sorted.forEach(symbol => {
     const asset = ASSETS[symbol], h = holding[symbol], lp = livePrices[symbol];
     const hasThis   = h.totalInvested > 0;
@@ -1196,11 +1046,9 @@ function renderInvestments() {
     const changeStr = changePct!=null ? `${changePct>=0?'▲':'▼'} ${Math.abs(changePct).toFixed(2)}% today` : '--';
     const changeCls = changePct!=null ? (changePct>=0?'up':'down') : '';
     const gainCls   = h.gainLoss>=0 ? 'inv-gain-pos' : 'inv-gain-neg';
-
     const rightHTML = hasThis
       ? `<div class="inv-holding-block">Invested<br><span class="inv-holding-val">${fmt(h.totalInvested)}</span><br>Value now<br><span class="inv-holding-val ${gainCls}">${fmt(h.currentValue)}</span><br>Return<br><span class="${gainCls}">${(h.gainLoss>=0?'+':'-')+fmt(h.gainLoss)} &nbsp;${(h.returnPct>=0?'+':'')+h.returnPct.toFixed(2)}%</span></div>`
       : `<div class="inv-card-desc">${asset.desc}</div>`;
-
     const card = document.createElement('div');
     card.className = `inv-card ${hasThis?'has-holding':'no-holding'}`;
     card.innerHTML = `
@@ -1215,8 +1063,6 @@ function renderInvestments() {
       <div class="inv-card-chart"><canvas id="mini-${symbol}"></canvas></div>
       <div class="inv-card-right">${rightHTML}</div>`;
     grid.appendChild(card);
-
-    // Chart
     let pts = history.length >= 2 ? history : null;
     if (!pts) {
       const base = (price??100) - (changeAmt??0)*5;
@@ -1239,7 +1085,6 @@ function renderInvestments() {
       canvas.style.filter = 'drop-shadow(0 0 7px rgba(74,222,128,0.6))';
     }
   });
-
   const tableSection = document.getElementById('inv-table-section');
   const tbody        = document.getElementById('inv-holdings-tbody');
   if (tableSection && tbody) {
@@ -1267,14 +1112,8 @@ function renderInvestments() {
     }).join('');
   }
 }
-
-// ══════════════════════════════════════════════════════
-// GOALS
-// ══════════════════════════════════════════════════════
 const loadGoals = () => JSON.parse(localStorage.getItem('bw_goals') || '[]');
 const saveGoals = d => localStorage.setItem('bw_goals', JSON.stringify(d));
-
-// Calculate required payment per period to hit target by deadline
 function calcGoalPayment(target, freq, deadlineStr) {
   const now      = new Date();
   const deadline = new Date(deadlineStr + 'T00:00:00');
@@ -1286,7 +1125,6 @@ function calcGoalPayment(target, freq, deadlineStr) {
   if (freq === 'monthly') return target / (daysLeft / 30.44);
   return null;
 }
-
 function updateGoalPreview() {
   const target   = parseFloat(document.getElementById('goal-target').value) || 0;
   const deadline = document.getElementById('goal-date').value;
@@ -1299,7 +1137,6 @@ function updateGoalPreview() {
   el.textContent  = fmt(pmt) + freqLabel;
   el.style.color  = 'var(--green)';
 }
-
 function addGoal() {
   const name     = document.getElementById('goal-name').value.trim();
   const target   = parseFloat(document.getElementById('goal-target').value);
@@ -1321,16 +1158,12 @@ function addGoal() {
   renderGoals();
   renderDashboard();
 }
-
 function deleteGoal(id) {
   if (!confirm('Delete this goal?')) return;
   saveGoals(loadGoals().filter(g => g.id !== id));
   renderGoals();
   renderDashboard();
 }
-
-// Check in: mark this period's payment as made
-// Stores a checkin with today's date so we only allow one per period
 function checkInGoal(id) {
   const goals = loadGoals();
   const g     = goals.find(g => g.id === id);
@@ -1339,7 +1172,6 @@ function checkInGoal(id) {
   const periodKey  = getPeriodKey(g.freq, todayStr);
   const alreadyDid = g.checkIns.some(c => c.period === periodKey);
   if (alreadyDid) {
-    // Undo the checkin
     g.checkIns = g.checkIns.filter(c => c.period !== periodKey);
     g.saved    = Math.max(0, g.saved - g.payment);
   } else {
@@ -1348,27 +1180,22 @@ function checkInGoal(id) {
   }
   saveGoals(goals);
   renderGoals();
-  renderDashboard(); // balance updates since goal checkin affects bank balance
+  renderDashboard();
 }
-
-// Period key so we only allow one checkin per day/week/month
 function getPeriodKey(freq, dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
   if (freq === 'daily')   return dateStr;
   if (freq === 'monthly') return `${d.getFullYear()}-${d.getMonth()+1}`;
   if (freq === 'weekly') {
-    // ISO week number
     const jan1  = new Date(d.getFullYear(), 0, 1);
     const week  = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
     return `${d.getFullYear()}-W${week}`;
   }
   return dateStr;
 }
-
 function isCheckedInToday(goal) {
   return goal.checkIns.some(c => c.period === getPeriodKey(goal.freq, today()));
 }
-
 function renderGoalCard(g, compact=false) {
   const now        = new Date();
   const deadline   = new Date(g.deadline + 'T00:00:00');
@@ -1379,21 +1206,16 @@ function renderGoalCard(g, compact=false) {
   const isUrgent   = daysLeft <= 14 && daysLeft >= 0 && !isComplete;
   const checkedIn  = isCheckedInToday(g);
   const freqLabel  = g.freq === 'daily' ? 'day' : g.freq === 'weekly' ? 'week' : 'month';
-
-  // Recalculate payment from remaining
   const remaining  = Math.max(0, g.target - g.saved);
-  const pmt        = g.payment; // always show the original payment set at creation
-
+  const pmt        = g.payment;
   let cardCls = 'goal-card';
   let badge   = `<span class="goal-badge goal-badge-active">ACTIVE</span>`;
   if (isComplete) { cardCls += ' complete'; badge = `<span class="goal-badge goal-badge-complete">COMPLETE ✓</span>`; }
   else if (isOverdue) { cardCls += ' overdue'; badge = `<span class="goal-badge goal-badge-overdue">OVERDUE</span>`; }
   else if (isUrgent)  { cardCls += ' urgent';  badge = `<span class="goal-badge goal-badge-urgent">URGENT</span>`; }
-
   const daysStr   = isOverdue ? `<span style="color:var(--red)">${Math.abs(daysLeft)} days overdue</span>`
                               : `<span style="color:${isUrgent?'var(--yellow)':'var(--text)'}">${daysLeft} days left</span>`;
   const fillColor = isComplete ? 'var(--green)' : isOverdue ? 'var(--red)' : isUrgent ? 'var(--yellow)' : 'var(--blue)';
-
   return `<div class="${cardCls}">
     <div class="goal-card-left">
       <div style="display:flex;align-items:center;gap:10px">${badge}<div class="goal-title">${g.name}</div></div>
@@ -1418,10 +1240,8 @@ function renderGoalCard(g, compact=false) {
     </div>
   </div>`;
 }
-
 function renderGoals() {
   const goals = loadGoals();
-  // Full goals page
   const grid  = document.getElementById('goals-grid');
   const empty = document.getElementById('goals-empty');
   if (grid) {
@@ -1433,7 +1253,6 @@ function renderGoals() {
       grid.innerHTML = goals.map(g => renderGoalCard(g)).join('');
     }
   }
-  // Dashboard summary — only active/urgent goals
   const dashSection = document.getElementById('dash-goals-section');
   const dashGrid    = document.getElementById('dash-goals-grid');
   if (dashSection && dashGrid) {
@@ -1444,24 +1263,17 @@ function renderGoals() {
       : `<div style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--text3);padding:16px 0">All goals complete!</div>`;
   }
 }
-
-// Total goal checkins made AFTER snapshot for balance projection
 function goalCheckInsAfterSnap(snapMs) {
   const goals = loadGoals();
   let total = 0;
   goals.forEach(g => {
     g.checkIns.forEach(c => {
-      // checkin date as ms (use noon to avoid timezone issues)
       const cMs = new Date(c.date + 'T12:00:00').getTime();
       if (cMs > snapMs) total += c.amount;
     });
   });
   return total;
 }
-
-// ══════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   ['i-date','e-date','ri-date','re-date','inv-date'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = today();
